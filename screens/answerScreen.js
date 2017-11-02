@@ -52,7 +52,8 @@ class AnswerScreen extends React.Component {
     ques_text: "",
     ans_text: "",
     user: "",
-    answer: []
+    answer: [],
+    id: ""
   };
 
   componentWillMount() {
@@ -65,7 +66,12 @@ class AnswerScreen extends React.Component {
         var displayName = user.displayName;
         var email = user.email;
         var id1 = user.uid;
-        thisRef.setState({ user: displayName, ques_key: key, ques_text: data });
+        thisRef.setState({
+          user: displayName,
+          ques_key: key,
+          ques_text: data,
+          id: id1
+        });
       }
     });
 
@@ -87,7 +93,8 @@ class AnswerScreen extends React.Component {
         key: this.state.ques_key,
         ques: this.state.ques_text,
         answer: this.state.ans_text,
-        user: this.state.user
+        user: this.state.user,
+        id: this.state.id
       }
     });
   }

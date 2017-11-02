@@ -153,7 +153,8 @@ const getContent = () => {
           var key = snap.key;
           var text = snap.child("text").val();
           var name = snap.child("user").val();
-          var ob = { key, name, text };
+          var id = snap.child("id").val();
+          var ob = { key, name, text, id };
           ques.push(ob);
           if (ques.length === snapshot.numChildren()) {
             resolve(ques);
@@ -172,7 +173,8 @@ const answerContent = payload => {
   if (payload.answer != "")
     db.push({
       user: payload.user,
-      answer: payload.answer
+      answer: payload.answer,
+      id: payload.id
     });
   var ques = [];
   return new Promise((resolve, reject) => {
