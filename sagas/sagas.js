@@ -230,7 +230,8 @@ const chatContent = payload => {
   db.set({ message: payload.message });
 };
 
-const getChats = payload => {
+const getChat = payload => {
+  console.log("in the getchat blockvbjcxnvkx,");
   let messages = [];
   var db = firebase
     .database()
