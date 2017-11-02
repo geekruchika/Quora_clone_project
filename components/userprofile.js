@@ -208,6 +208,55 @@ class UserProfile extends React.Component {
             }}
           />
         </View> */}
+        <View>
+          <Card>
+            <CardItem header>
+              <Text>You may connect to other account!</Text>
+            </CardItem>
+            <CardItem>
+              <Icon active name="logo-googleplus" />
+              <Text>Google Plus</Text>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </CardItem>
+            <CardItem>
+              <Icon active name="logo-facebook" />
+              <Text>Facebook</Text>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </CardItem>
+            <CardItem>
+              <Icon active name="logo-twitter" />
+              <Text>Twitter</Text>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </CardItem>
+            <CardItem>
+              <Icon active name="logo-reddit" />
+              <Text>Reddit</Text>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </CardItem>
+            <CardItem>
+              <Icon active name="logo-linkedin" />
+              <Text>Linked In</Text>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </CardItem>
+            <CardItem>
+              <Icon active name="logo-youtube" />
+              <Text>You Tube</Text>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </CardItem>
+          </Card>
+        </View>
       </View>
     );
   }
