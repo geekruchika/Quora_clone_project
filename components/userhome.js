@@ -82,9 +82,8 @@ class UserHome extends React.Component {
       type: "START_CONTENT"
     });
   }
-  componentDidMount() {
-    // console.log(this.props.record);
-  }
+  componentDidMount() {}
+
   postContent() {
     this.setState({ value: "" });
     this.props.dispatch({
@@ -95,7 +94,7 @@ class UserHome extends React.Component {
         Content: this.state.newContent
       }
     });
-    const thisRef = this;
+    // const thisRef = this;
     // // console.log(thisRef);
     // var db = firebase.database().ref("/questions/" + this.state.id);
     // console.log(db);
@@ -139,13 +138,25 @@ class UserHome extends React.Component {
 
   arrayrender() {
     let nav = this.props.navigation;
-    console.log(this.props.navigation);
+    // console.log(this.props.navigation);
     var ques = this.props.record["record"];
     var name = this.state.userName;
     return ques.map(function(el, i) {
       return (
         <View key={i}>
-          <ListItem avatar>
+          <ListItem
+            avatar
+            onPress={() => {
+              console.log(el.text);
+              const { navigate } = nav;
+              navigate("Answer", {
+                data: el.text,
+                key: el.key,
+                user: name,
+                asked: el.name
+              });
+            }}
+          >
             <Left>
               <Thumbnail source={require("../img/Q.jpg")} />
             </Left>

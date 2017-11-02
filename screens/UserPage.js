@@ -105,7 +105,7 @@ class UserPage extends React.Component {
                       })}
                   > */}
                     <Icon name="paper" />
-                    <Text>Answer</Text>
+                    <Text>Notification</Text>
                     {/* </TouchableOpacity> */}
                   </TabHeading>
                 }

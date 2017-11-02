@@ -39,7 +39,7 @@ class UserAnswer extends React.Component {
   render() {
     return (
       <View>
-        <Text>UserAnswer page</Text>
+        <Text>UserNotification page</Text>
       </View>
     );
   }

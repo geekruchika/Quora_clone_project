@@ -84,81 +84,38 @@ class chatScreen extends React.Component {
         });
       }
     );
-
-    // var db = firebase.database().ref("/messages/" + recevierUid + uid);
-    // var thisref = this;
-    // db
-    //   .orderByKey()
-    //   .once("value")
-    //   .then(function(snapshot) {
-    //     var key = snapshot.key;
-    //     var text = snapshot.child("message").val();
-    //     thisref.setState({
-    //       messages: text
-    //       // senderKey: uid,
-    //       // sender: name,
-    //       // receiver: recevierName,
-    //       // receiverKey: recevierUid
-    //     });
-
-    //     if (!snapshot.exists()) {
-    //       thisref.setState({
-    //         // sender: name,
-    //         // receiver: recevierName,
-    //         // senderKey: uid,
-    //         // receiverKey: recevierUid,
-
-    //         messages: [
-    //           {
-    //             _id: 1,
-    //             text: "start chat",
-    //             createdAt: new Date(),
-    //             user: {
-    //               _id: uid,
-    //               name: name,
-    //               avatar:
-    //                 "/Users/ruchika/Sites/projects/quora-project/img/img_avatar.png"
-    //             }
-    //           }
-    //         ]
-    //       });
-    //     }
-    //   });
   }
 
   onSend(messages = []) {
-    this.setState(
-      previousState => ({
-        messages: GiftedChat.append(previousState.messages, messages)
-      }),
-      () => {
-        this.props.dispatch({
-          type: "CHAT_CONTENT",
-          payload: {
-            senderkey: this.state.receiverKey,
-            receiverkey: this.state.senderKey,
-            message: this.state.messages
-          }
-        });
-        //   var db = firebase
-        //     .database()
-        //     .ref("/messages/" + this.state.receiverKey + this.state.senderKey);
+    // this.setState(
+    //   previousState => ({
+    //     messages: GiftedChat.append(previousState.messages, messages)
+    //   }),
+    //   () => {
+    //     this.props.dispatch({
+    //       type: "CHAT_CONTENT",
+    //       payload: {
+    //         senderkey: this.state.receiverKey,
+    //         receiverkey: this.state.senderKey,
+    //         message: this.state.messages
+    //       }
+    //     });
+    //   }
+    // );
 
-        //   db.set({
-        //     message: this.state.messages
-        //   });
-
-        //   var db = firebase
-        //     .database()
-        //     .ref("/messages/" + this.state.senderKey + this.state.receiverKey);
-
-        //   db.set({ message: this.state.messages });
+    // this.props.messages = GiftedChat.append(this.props.messages, messages);
+    this.props.dispatch({
+      type: "CHAT_CONTENT",
+      payload: {
+        senderkey: this.state.receiverKey,
+        receiverkey: this.state.senderKey,
+        message: GiftedChat.append(this.props.messages["messages"], messages)
       }
-    );
+    });
   }
 
   render() {
-    console.log(this.props.messages);
+    console.log(this.props.messages["messages"]);
     return (
       <Container>
         <Header>
@@ -171,7 +128,7 @@ class chatScreen extends React.Component {
           <Right />
         </Header>
         <GiftedChat
-          messages={this.state.messages}
+          messages={this.props.messages["messages"]}
           onSend={messages => this.onSend(messages)}
           user={{
             _id: this.state.senderKey,
@@ -197,7 +154,7 @@ class chatScreen extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    messages: state.message
+    messages: state.messages
   };
 }
 

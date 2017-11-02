@@ -84,8 +84,16 @@ const chatData = function* chatData() {
   yield takeEvery("CHAT_CONTENT", function*(action) {
     yield put({ type: "CHAT_STARTED" });
     try {
+      console.log(action.payload);
       yield call(chatContent.bind(this, action.payload));
       yield put({ type: "POST_SUCCESS" });
+
+      var data = yield call(getChat.bind(this, action.payload));
+      console.log(data);
+      yield put({
+        type: "FETCH_MESSAGE",
+        payload: data
+      });
     } catch (error) {
       yield put({ type: "POST_FAILED" });
     }
@@ -94,12 +102,11 @@ const chatData = function* chatData() {
 
 const chatgetData = function* chatgetData() {
   yield takeEvery("CHAT_CONTENT_GET", function*(action) {
-    yield put({ type: "POST_STARTED" });
+    yield put({ type: "CHAT_STARTED" });
     try {
       var data = yield call(getChat.bind(this, action.payload));
-      console.log("message----->" + data);
       yield put({
-        type: "FETCH_message",
+        type: "FETCH_MESSAGE",
         payload: data
       });
     } catch (error) {
@@ -231,7 +238,8 @@ const chatContent = payload => {
 };
 
 const getChat = payload => {
-  console.log("in the getchat blockvbjcxnvkx,");
+  console.log("in the getchat block");
+  console.log(payload);
   let messages = [];
   var db = firebase
     .database()
@@ -245,22 +253,22 @@ const getChat = payload => {
         var text = snapshot.child("message").val();
         messages = text;
 
-        if (!snapshot.exists()) {
-          messages: [
-            {
-              _id: 1,
-              text: "start chat",
-              createdAt: new Date(),
-              user: {
-                _id: uid,
-                name: name,
-                avatar:
-                  "/Users/ruchika/Sites/projects/quora-project/img/img_avatar.png"
-              }
-            }
-          ];
-        }
-
+        // if (!snapshot.exists()) {
+        //   messages: [
+        //     {
+        //       _id: 1,
+        //       text: "start chat",
+        //       createdAt: new Date(),
+        //       user: {
+        //         _id: uid,
+        //         name: name,
+        //         avatar:
+        //           "/Users/ruchika/Sites/projects/quora-project/img/img_avatar.png"
+        //       }
+        //     }
+        //   ];
+        // }
+        console.log(messages);
         resolve(messages);
       })
       .catch(error => {

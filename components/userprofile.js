@@ -150,22 +150,6 @@ class UserProfile extends React.Component {
   render() {
     return (
       <View>
-        {/* <Text>User: {this.state.userName}</Text>
-        <Text>email: {this.state.email}</Text>
-
-        <Item fixedLabel>
-          <Label style={{ fontSize: 13 }}>
-            Want to LogOut?....<Button
-              transparent
-              info
-              style={{ width: 10, height: 10 }}
-              onPress={this.signout}
-            >
-              <Text>Log Out</Text>
-            </Button>
-          </Label>
-        </Item> */}
-
         <Card style={{ flex: 0 }}>
           <CardItem>
             <Left>

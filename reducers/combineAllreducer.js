@@ -3,6 +3,6 @@ import addreducer from "./addreducer.js";
 import chatReducer from "./chatReducer";
 const allReducers = combineReducers({
   record: addreducer,
-  message: chatReducer
+  messages: chatReducer
 });
 export default allReducers;
