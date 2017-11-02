@@ -80,16 +80,16 @@ class UserAnswer extends React.Component {
       .once("value")
       .then(function(snapshot) {
         snapshot.forEach(function(snap) {
-          var key = snap.key;
+          var keyques = snap.key;
           var ans = snap.child("answer");
           var ques = snap.child("text").val();
           var ob = [];
           ans.forEach(function(text) {
             var key = text.key;
             var id = text.child("id").val();
-
+            var val = text.child("answer").val();
             if (uid === id) {
-              ob.push(text.child("answer").val());
+              ob.push({ val, key, keyques });
             }
           });
           // console.log(ques);
@@ -104,7 +104,7 @@ class UserAnswer extends React.Component {
       });
   }
 
-  delete(ob) {
+  deleteQuestion(ob) {
     console.log(ob);
     var onComplete = function(error) {
       if (error) {
@@ -116,7 +116,7 @@ class UserAnswer extends React.Component {
 
     var db = firebase.database().ref("/questions/" + ob.key);
     db.remove(onComplete);
-    this.props.dispatch({ type: "START_CONTENT" });
+    // this.props.dispatch({ type: "START_CONTENT" });
   }
 
   arrayrender() {
@@ -138,7 +138,7 @@ class UserAnswer extends React.Component {
                 <Text note>{el.text}</Text>
               </Body>
               <Right>
-                <Icon name="pint" onPress={() => thisref.delete(el)} />
+                <Icon name="pint" onPress={() => thisref.deleteQuestion(el)} />
                 <Text note>Delete</Text>
               </Right>
             </ListItem>
@@ -147,17 +147,29 @@ class UserAnswer extends React.Component {
       }
     });
   }
-  test(el) {
-    var thisref = this;
+
+  deleteAnswer(ob) {
+    console.log(ob);
+
+    var db = firebase
+      .database()
+      .ref("/questions/" + ob.keyques + "/answer/" + ob.key);
+    db.remove();
+    this.props.dispatch({ type: "START_CONTENT" });
+  }
+
+  test(el, thisref) {
+    //var thisref = this;
     return el.map(function(item, i) {
+      console.log("check" + item.key);
       return (
         <View key={i}>
           <ListItem>
             <Body>
-              <Text>{item}</Text>
+              <Text>{item.val}</Text>
             </Body>
             <Right>
-              <Icon name="pint" onPress={() => thisref.delete(el)} />
+              <Icon name="pint" onPress={() => thisref.deleteAnswer(item)} />
               <Text note>Delete</Text>
             </Right>
           </ListItem>
@@ -169,7 +181,6 @@ class UserAnswer extends React.Component {
   arrayforanswer() {
     var ques = this.state.ques_ans;
     let thisref = this;
-    console.log(ques);
 
     return ques.map(function(el, i) {
       console.log(el);
@@ -184,7 +195,7 @@ class UserAnswer extends React.Component {
             </Body>
             <Right />
           </ListItem>
-          <List>{thisref.test(el.ob)}</List>
+          <List>{thisref.test(el.ob, thisref)}</List>
         </View>
       );
     });
@@ -205,13 +216,6 @@ class UserAnswer extends React.Component {
             <Text>Answer done by you</Text>
           </CardItem>
         </Card>
-        <Button
-          onPress={() => {
-            this.arrayforanswer();
-          }}
-        >
-          <Text>click</Text>
-        </Button>
 
         <List>{this.arrayforanswer()}</List>
       </View>
