@@ -42,6 +42,11 @@ import { connect } from "react-redux";
 import rootsaga from "../sagas/sagas";
 
 class UserAnswer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.arrayforanswer = this.arrayforanswer.bind(this);
+  }
+
   state = {
     userName: "",
     email: "",
@@ -70,42 +75,49 @@ class UserAnswer extends React.Component {
   }
 
   componentDidMount() {
-    var db = firebase.database().ref("/questions/");
-    var ob = [];
-    var uid = this.state.uid;
-    var ques_ans = [];
-    var thisref = this;
-    db
-      .orderByKey()
-      .once("value")
-      .then(function(snapshot) {
-        snapshot.forEach(function(snap) {
-          var keyques = snap.key;
-          var ans = snap.child("answer");
-          var ques = snap.child("text").val();
-          var ob = [];
-          ans.forEach(function(text) {
-            var key = text.key;
-            var id = text.child("id").val();
-            var val = text.child("answer").val();
-            if (uid === id) {
-              ob.push({ val, key, keyques });
-            }
-          });
-          // console.log(ques);
-          // console.log(ob);
-          if (ob.length > 0) {
-            var data = { ques, ob };
-            ques_ans.push(data);
-          }
-        });
-        console.log(ques_ans);
-        thisref.setState({ ques_ans: ques_ans });
-      });
+    this.props.dispatch({
+      type: "QUES_ANS_CONTENT",
+      payload: {
+        uid: this.state.uid
+      }
+    });
+
+    // var db = firebase.database().ref("/questions/");
+    // var ob = [];
+    // var uid = this.state.uid;
+    // var ques_ans = [];
+    // var thisref = this;
+    // db
+    //   .orderByKey()
+    //   .once("value")
+    //   .then(function(snapshot) {
+    //     snapshot.forEach(function(snap) {
+    //       var keyques = snap.key;
+    //       var ans = snap.child("answer");
+    //       var ques = snap.child("text").val();
+    //       var ob = [];
+    //       ans.forEach(function(text) {
+    //         var key = text.key;
+    //         var id = text.child("id").val();
+    //         var val = text.child("answer").val();
+    //         if (uid === id) {
+    //           ob.push({ val, key, keyques });
+    //         }
+    //       });
+    //       // console.log(ques);
+    //       // console.log(ob);
+    //       if (ob.length > 0) {
+    //         var data = { ques, ob };
+    //         ques_ans.push(data);
+    //       }
+    //     });
+    //     //console.log(ques_ans);
+    //     thisref.setState({ ques_ans: ques_ans });
+    //   });
   }
 
   deleteQuestion(ob) {
-    console.log(ob);
+    // console.log(ob);
     var onComplete = function(error) {
       if (error) {
         console.log("Synchronization failed");
@@ -149,7 +161,7 @@ class UserAnswer extends React.Component {
   }
 
   deleteAnswer(ob) {
-    console.log(ob);
+    //console.log(ob);
 
     var db = firebase
       .database()
@@ -159,9 +171,7 @@ class UserAnswer extends React.Component {
   }
 
   test(el, thisref) {
-    //var thisref = this;
     return el.map(function(item, i) {
-      console.log("check" + item.key);
       return (
         <View key={i}>
           <ListItem>
@@ -179,11 +189,10 @@ class UserAnswer extends React.Component {
   }
 
   arrayforanswer() {
-    var ques = this.state.ques_ans;
+    var ques = this.props.ques_ans.ques_ans;
     let thisref = this;
-
+    console.log(ques);
     return ques.map(function(el, i) {
-      console.log(el);
       return (
         <View key={i}>
           <ListItem avatar>
@@ -202,7 +211,7 @@ class UserAnswer extends React.Component {
   }
 
   render() {
-    // console.log(this.state.record["answer"]);
+    console.log(this.props.ques_ans.ques_ans);
     return (
       <View>
         <Card>
@@ -224,10 +233,11 @@ class UserAnswer extends React.Component {
 }
 
 function mapStateToProps(state) {
+  console.log(state);
   return {
     record: state.record,
-    answer: state.answer
+    ques_ans: state.ques_ans
   };
 }
 
-export default connect(mapStateToProps)(UserAnswer);
+export default connect(mapStateToProps, null)(UserAnswer);
