@@ -1,39 +1,17 @@
 import React, { Component } from "react";
+import { View, ScrollView } from "react-native";
 import {
-  View,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Image
-} from "react-native";
-import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Footer,
-  FooterTab,
-  Button,
   Left,
   Right,
   Body,
   Icon,
   Text,
-  Input,
-  Form,
-  Item,
-  Label,
-  Tab,
-  Tabs,
-  TabHeading,
   List,
   ListItem,
-  ScrollView,
   Card,
   CardItem,
   Thumbnail
 } from "native-base";
-import { MonoText } from "../components/StyledText";
 import { NavigationActions } from "react-navigation";
 import { firebase } from "../firebaseconfig";
 
@@ -65,23 +43,32 @@ class UserAnswer extends React.Component {
       email = user.email;
       uid = user.uid;
     }
-    this.setState({
-      userName: name,
-      email: email,
-      uid: uid
-    });
+    this.setState(
+      {
+        userName: name,
+        email: email,
+        uid: uid
+      },
+      () => {
+        this.props.dispatch({
+          type: "QUES_ANS_CONTENT",
+          payload: {
+            uid: this.state.uid
+          }
+        });
+      }
+    );
 
     this.props.dispatch({ type: "START_CONTENT" });
   }
 
   componentDidMount() {
-    this.props.dispatch({
-      type: "QUES_ANS_CONTENT",
-      payload: {
-        uid: this.state.uid
-      }
-    });
-
+    // this.props.dispatch({
+    //   type: "QUES_ANS_CONTENT",
+    //   payload: {
+    //     uid: this.state.uid
+    //   }
+    // });
     // var db = firebase.database().ref("/questions/");
     // var ob = [];
     // var uid = this.state.uid;
@@ -128,7 +115,7 @@ class UserAnswer extends React.Component {
 
     var db = firebase.database().ref("/questions/" + ob.key);
     db.remove(onComplete);
-    // this.props.dispatch({ type: "START_CONTENT" });
+    this.props.dispatch({ type: "START_CONTENT" });
   }
 
   arrayrender() {
@@ -167,14 +154,23 @@ class UserAnswer extends React.Component {
       .database()
       .ref("/questions/" + ob.keyques + "/answer/" + ob.key);
     db.remove();
-    this.props.dispatch({ type: "START_CONTENT" });
+    //this.props.dispatch({ type: "START_CONTENT" });
+    this.props.dispatch({
+      type: "QUES_ANS_CONTENT",
+      payload: {
+        uid: this.state.uid
+      }
+    });
   }
 
   test(el, thisref) {
     return el.map(function(item, i) {
       return (
         <View key={i}>
-          <ListItem>
+          <ListItem avatar>
+            <Left>
+              <Text>Me:</Text>
+            </Left>
             <Body>
               <Text>{item.val}</Text>
             </Body>
@@ -211,23 +207,27 @@ class UserAnswer extends React.Component {
   }
 
   render() {
-    console.log(this.props.ques_ans.ques_ans);
+    //console.log(this.props.ques_ans.ques_ans);
     return (
-      <View>
-        <Card>
-          <CardItem>
-            <Text>{this.state.userName}</Text>
-          </CardItem>
-        </Card>
-        <List>{this.arrayrender()}</List>
-        <Card>
-          <CardItem header>
-            <Text>Answer done by you</Text>
-          </CardItem>
-        </Card>
+      <ScrollView>
+        <View>
+          <Card>
+            <CardItem>
+              <Text>{this.state.userName}</Text>
+            </CardItem>
+          </Card>
+          <List>{this.arrayrender()}</List>
+          <Card>
+            <CardItem header>
+              <Text>Answer done by you</Text>
+            </CardItem>
+          </Card>
 
-        <List>{this.arrayforanswer()}</List>
-      </View>
+          <List>
+            <ScrollView>{this.arrayforanswer()}</ScrollView>
+          </List>
+        </View>
+      </ScrollView>
     );
   }
 }

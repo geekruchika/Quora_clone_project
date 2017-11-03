@@ -33,11 +33,9 @@ import {
   Card,
   CardItem
 } from "native-base";
-import { MonoText } from "../components/StyledText";
 import { NavigationActions } from "react-navigation";
 import { firebase } from "../firebaseconfig";
 
-import { increment, decrement, fetchrecord, postContent } from "../actions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import rootsaga from "../sagas/sagas";
