@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, StatusBar, StyleSheet, View } from "react-native";
+import { Platform, StatusBar, StyleSheet, Text } from "react-native";
 import { AppLoading, Asset, Font } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import RootNavigation from "./navigation/RootNavigation";
@@ -14,23 +14,39 @@ import store from "./store/store";
 
 export default class App extends React.Component {
   state = { isLoadingComplete: false };
+
+  componentWillMount() {
+    Font.loadAsync({
+      Roboto: require("native-base/Fonts/Roboto.ttf"),
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+    }).then(res => {
+      this.setState({
+        isLoadingComplete: true
+      });
+    });
+  }
+
   render() {
-    //console.log(store);
-    return (
-      <Provider store={store}>
-        <RootNavigation />
-      </Provider>
-    );
-    //   <View style={styles.container}>
-    //     {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-    //     {Platform.OS === "android" && <View style={styles.statusBarUnderlay} />}
-    //     <RootNavigation />
-    //   </View>
-    // );
-    // }
+    if (this.state.isLoadingComplete) {
+      return (
+        <Provider store={store}>
+          <RootNavigation />
+        </Provider>
+      );
+    } else {
+      return <Text>Loading...</Text>;
+    }
+    //   } else {
+    //     return (
+    //       <Provider store={store}>
+    //         <RootNavigation />
+    //       </Provider>
+    //     );
+    //   }
   }
 
   _loadResourcesAsync = async () => {
+    console.log("fontt");
     return Promise.all([
       Asset.loadAsync([
         require("./assets/images/robot-dev.png"),
@@ -58,7 +74,6 @@ export default class App extends React.Component {
     this.setState({ isLoadingComplete: true });
   };
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

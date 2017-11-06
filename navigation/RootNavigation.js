@@ -17,7 +17,6 @@ const RootStackNavigator = StackNavigator(
     Main: {
       screen: MainTabNavigator
     },
-
     Profile: {
       screen: signupScreen
     },
@@ -31,6 +30,7 @@ const RootStackNavigator = StackNavigator(
       screen: chatScreen
     }
   },
+  { headerMode: "none" },
   { initialRouteName: "Splash" },
   {
     navigationOptions: () => ({

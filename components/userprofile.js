@@ -1,14 +1,9 @@
 import React, { Component } from "react";
-import {
-  View,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Image
-} from "react-native";
+import { TouchableOpacity, TextInput, StyleSheet, Image } from "react-native";
 import {
   Container,
   Header,
+  View,
   Title,
   Content,
   Footer,

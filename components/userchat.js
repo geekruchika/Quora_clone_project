@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  View,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Image
-} from "react-native";
+import { TouchableOpacity, TextInput, StyleSheet, Image } from "react-native";
 import {
   Container,
   Header,
@@ -17,6 +11,7 @@ import {
   Left,
   Right,
   Body,
+  View,
   Icon,
   Text,
   Input,
@@ -92,33 +87,31 @@ class UserChat extends React.Component {
     return this.state.Alluser.map(function(el, i) {
       if (thisref.state.userid != el.key)
         return (
-          <View key={i}>
-            <ListItem
-              avatar
-              onPress={() => {
-                const { navigate } = nav;
-                navigate("Chat", { key: el.key, name: el.name });
-              }}
-            >
-              <Left>
-                <Thumbnail source={require("../img/Q.jpg")} />
-              </Left>
-              <Body>
-                <Text>{el.name}</Text>
-                <Text note>{}</Text>
-              </Body>
-              <Right>
-                <Icon
-                  name="chatbubbles"
-                  onPress={() => {
-                    const { navigate } = nav;
-                    navigate("Chat", { key: el.key, name: el.name });
-                  }}
-                />
-                {/* <Text note>1:20 pm</Text> */}
-              </Right>
-            </ListItem>
-          </View>
+          <ListItem
+            key={i}
+            avatar
+            onPress={() => {
+              const { navigate } = nav;
+              navigate("Chat", { key: el.key, name: el.name });
+            }}
+          >
+            <Left>
+              <Thumbnail source={require("../img/Q.jpg")} />
+            </Left>
+            <Body>
+              <Text>{el.name}</Text>
+            </Body>
+            <Right>
+              <Icon
+                name="chatbubbles"
+                onPress={() => {
+                  const { navigate } = nav;
+                  navigate("Chat", { key: el.key, name: el.name });
+                }}
+              />
+              {/* <Text note>1:20 pm</Text> */}
+            </Right>
+          </ListItem>
         );
     });
   }

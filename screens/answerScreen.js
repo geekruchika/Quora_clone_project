@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  View,
   TouchableOpacity,
   TextInput,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
   Header,
   Title,
   Content,
+  View,
   Footer,
   FooterTab,
   Button,
@@ -122,6 +122,7 @@ class AnswerScreen extends React.Component {
   render() {
     return (
       <Container style={{ backgroundColor: "#FFFFFF" }}>
+        <Header />
         <Content>
           <View>
             <Card>
@@ -183,9 +184,7 @@ class AnswerScreen extends React.Component {
               </Item>
             </Form>
 
-            <List>
-              <ScrollView>{this.arrayrender()}</ScrollView>
-            </List>
+            <List>{this.arrayrender()}</List>
           </View>
         </Content>
         <Footer>

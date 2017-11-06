@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  View,
   TouchableOpacity,
   TextInput,
   StyleSheet,
@@ -8,6 +7,7 @@ import {
   ScrollView
 } from "react-native";
 import {
+  View,
   Container,
   Header,
   Title,

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  View,
   TouchableOpacity,
   TextInput,
   StyleSheet,
@@ -15,6 +14,7 @@ import {
   Footer,
   FooterTab,
   Button,
+  View,
   Left,
   Right,
   Body,
@@ -143,53 +143,52 @@ class UserHome extends React.Component {
     var name = this.state.userName;
     return ques.map(function(el, i) {
       return (
-        <View key={i}>
-          <ListItem
-            avatar
-            onPress={() => {
-              console.log(el.text);
-              const { navigate } = nav;
-              navigate("Answer", {
-                data: el.text,
-                key: el.key,
-                user: name,
-                asked: el.name
-              });
-            }}
-          >
-            <Left>
-              <Thumbnail source={require("../img/Q.jpg")} />
-            </Left>
-            <Body>
-              <Text>{el.name}</Text>
-              <Text note>{el.text}</Text>
-            </Body>
-            <Right>
-              <Icon
-                name="paper"
-                onPress={() => {
-                  console.log(el.text);
-                  const { navigate } = nav;
-                  navigate("Answer", {
-                    data: el.text,
-                    key: el.key,
-                    user: name,
-                    asked: el.name
-                  });
-                }}
-              />
-              <Text note>1:20 pm</Text>
-            </Right>
-          </ListItem>
-        </View>
+        <ListItem
+          key={i}
+          avatar
+          onPress={() => {
+            console.log(el.text);
+            const { navigate } = nav;
+            navigate("Answer", {
+              data: el.text,
+              key: el.key,
+              user: name,
+              asked: el.name
+            });
+          }}
+        >
+          <Left>
+            <Thumbnail source={require("../img/Q.jpg")} />
+          </Left>
+          <Body>
+            <Text>{el.name}</Text>
+            <Text note>{el.text}</Text>
+          </Body>
+          <Right>
+            <Icon
+              name="paper"
+              onPress={() => {
+                console.log(el.text);
+                const { navigate } = nav;
+                navigate("Answer", {
+                  data: el.text,
+                  key: el.key,
+                  user: name,
+                  asked: el.name
+                });
+              }}
+            />
+            <Text note>1:20 pm</Text>
+          </Right>
+        </ListItem>
       );
     });
   }
   render() {
     return (
-      <View>
-        <View>
-          <List style={{}}>
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <List>
             <ListItem avatar style={{ marginTop: 10 }}>
               <Left>
                 <Thumbnail source={require("../img/img_lights.jpg")} />
@@ -201,56 +200,64 @@ class UserHome extends React.Component {
             </ListItem>
           </List>
         </View>
-        <Form>
-          <Item stackedLabel>
-            {/* <Label>Your Answer:</Label> */}
-            <View
+        <View
+          style={{
+            flex: 2,
+            marginTop: 20
+          }}
+        >
+          <View style={{ flex: 1, flexDirection: "row" }}>
+            <Form
               style={{
-                flex: 1,
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                width: "100%"
+                flex: 8,
+                margin: 10
               }}
             >
-              <Input
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  fontSize: 20,
-                  alignContent: "flex-start",
-                  justifyContent: "flex-start",
-                  textAlignVertical: "top",
-                  margin: 5
-                }}
-                value={this.state.value}
-                multiline
-                placeholder="What is your question?"
-                onChangeText={text =>
-                  this.setState({
-                    newContent: text,
-                    value: text
-                  })}
-              />
-            </View>
+              <Item stackedLabel style={{ flex: 1 }}>
+                <Input
+                  style={{
+                    flex: 1,
+                    fontSize: 20,
+                    alignContent: "flex-start",
+                    justifyContent: "flex-start",
+                    textAlignVertical: "top",
+                    margin: 5
+                  }}
+                  value={this.state.value}
+                  multiline
+                  placeholder="What is your question?"
+                  onChangeText={text =>
+                    this.setState({
+                      newContent: text,
+                      value: text
+                    })}
+                />
+              </Item>
+            </Form>
             <Button
-              bordered
+              transparent
               danger
-              style={{ marginLeft: 270, height: 20 }}
+              style={{
+                flex: 2,
+                height: 30,
+                marginTop: 40
+              }}
               onPress={() => this.postContent()}
             >
               <Text>ASK</Text>
             </Button>
-          </Item>
-        </Form>
-        {/* <Form>
-          <Input placeholder="Enter" />
-        </Form>
-        <Button onPress={() => this.props.increment()}>
-          <Text>click</Text>
-        </Button> */}
-        <List>
-          <ScrollView>{this.arrayrender()}</ScrollView>
-        </List>
+          </View>
+        </View>
+        <View
+          style={{
+            flex: 8,
+            borderStyle: "solid"
+          }}
+        >
+          <ScrollView>
+            <List>{this.arrayrender()}</List>
+          </ScrollView>
+        </View>
       </View>
     );
   }

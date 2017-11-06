@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity, TextInput, StyleSheet } from "react-native";
+import { TouchableOpacity, TextInput, StyleSheet } from "react-native";
 import {
+  View,
   Container,
   Header,
   Title,
@@ -51,7 +52,11 @@ class signupScreen extends React.Component {
     let lastname = this.state.lname;
     let username = this.state.user;
     let password = this.state.pass;
-    //console.log(firstname, lastname, username, password, id);
+    if (firstname == "" || lastname == "" || username == "" || password == "") {
+      alert("Please fillup the form.");
+      return;
+    }
+
     var nav = this.props.navigation;
     firebase
       .auth()
@@ -80,7 +85,7 @@ class signupScreen extends React.Component {
         var errorMessage = error.message;
         console.log(errorCode);
         console.log(errorMessage);
-        alert("already have an account");
+        alert(errorMessage);
         // ...
       });
   };
@@ -94,13 +99,8 @@ class signupScreen extends React.Component {
     return (
       <Container>
         <Header>
-          <Left />
-          <Body>
-            <Title>Create Account</Title>
-          </Body>
-          <Right />
+          <Title>Create Account</Title>
         </Header>
-
         <Content style={{ backgroundColor: "#FFFFFF" }}>
           <Label style={{ margin: 10 }}>Firstname:</Label>
           <Form>
@@ -141,16 +141,10 @@ class signupScreen extends React.Component {
             <Text>Join Now</Text>
           </Button>
           <Item fixedLabel>
-            <Label style={{ fontSize: 13 }}>
-              Already on Quora?....<Button
-                transparent
-                info
-                style={{ width: 10, height: 10 }}
-                onPress={this.call}
-              >
-                <Text>Sign in</Text>
-              </Button>
-            </Label>
+            <Text style={{ fontSize: 13 }}>Already on Quora?....</Text>
+            <Button transparent info onPress={this.call}>
+              <Text>Sign in</Text>
+            </Button>
           </Item>
         </Content>
         <Footer />

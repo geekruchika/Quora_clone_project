@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-import { View, ScrollView } from "react-native";
+import { ScrollView, StyleSheet, ListView, RefreshControl } from "react-native";
+import InfiniteScrollView from "react-native-infinite-scroll-view";
+
 import {
   Left,
   Right,
   Body,
+  View,
   Icon,
   Text,
   List,
@@ -23,13 +26,18 @@ class UserAnswer extends React.Component {
   constructor(props) {
     super(props);
     this.arrayforanswer = this.arrayforanswer.bind(this);
+
+    this.ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+    // this.dataSource = ds.cloneWithRows(this.props.ques_ans.ques_ans);
   }
 
   state = {
     userName: "",
     email: "",
     uid: "",
-
+    answer: [],
     ques_ans: [],
     record: []
   };
@@ -60,47 +68,6 @@ class UserAnswer extends React.Component {
     );
 
     this.props.dispatch({ type: "START_CONTENT" });
-  }
-
-  componentDidMount() {
-    // this.props.dispatch({
-    //   type: "QUES_ANS_CONTENT",
-    //   payload: {
-    //     uid: this.state.uid
-    //   }
-    // });
-    // var db = firebase.database().ref("/questions/");
-    // var ob = [];
-    // var uid = this.state.uid;
-    // var ques_ans = [];
-    // var thisref = this;
-    // db
-    //   .orderByKey()
-    //   .once("value")
-    //   .then(function(snapshot) {
-    //     snapshot.forEach(function(snap) {
-    //       var keyques = snap.key;
-    //       var ans = snap.child("answer");
-    //       var ques = snap.child("text").val();
-    //       var ob = [];
-    //       ans.forEach(function(text) {
-    //         var key = text.key;
-    //         var id = text.child("id").val();
-    //         var val = text.child("answer").val();
-    //         if (uid === id) {
-    //           ob.push({ val, key, keyques });
-    //         }
-    //       });
-    //       // console.log(ques);
-    //       // console.log(ob);
-    //       if (ob.length > 0) {
-    //         var data = { ques, ob };
-    //         ques_ans.push(data);
-    //       }
-    //     });
-    //     //console.log(ques_ans);
-    //     thisref.setState({ ques_ans: ques_ans });
-    //   });
   }
 
   deleteQuestion(ob) {
@@ -166,20 +133,18 @@ class UserAnswer extends React.Component {
   test(el, thisref) {
     return el.map(function(item, i) {
       return (
-        <View key={i}>
-          <ListItem avatar>
-            <Left>
-              <Text>Me:</Text>
-            </Left>
-            <Body>
-              <Text>{item.val}</Text>
-            </Body>
-            <Right>
-              <Icon name="pint" onPress={() => thisref.deleteAnswer(item)} />
-              <Text note>Delete</Text>
-            </Right>
-          </ListItem>
-        </View>
+        <ListItem key={i} avatar>
+          <Left>
+            <Text>Me:</Text>
+          </Left>
+          <Body>
+            <Text>{item.val}</Text>
+          </Body>
+          <Right>
+            <Icon name="pint" onPress={() => thisref.deleteAnswer(item)} />
+            <Text note>Delete</Text>
+          </Right>
+        </ListItem>
       );
     });
   }
@@ -207,27 +172,61 @@ class UserAnswer extends React.Component {
   }
 
   render() {
-    //console.log(this.props.ques_ans.ques_ans);
+    //console.log(this.props.answer);
     return (
-      <ScrollView>
-        <View>
-          <Card>
-            <CardItem>
-              <Text>{this.state.userName}</Text>
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <Card style={{ flex: 1, flexDirection: "row" }}>
+            <CardItem style={{ flex: 9 }}>
+              <Left>
+                <Text>{this.state.userName}</Text>
+              </Left>
             </CardItem>
+            <Icon
+              style={{ flex: 1 }}
+              name="refresh"
+              onPress={() => {
+                this.props.dispatch({
+                  type: "QUES_ANS_CONTENT",
+                  payload: {
+                    uid: this.state.uid
+                  }
+                });
+              }}
+            />
           </Card>
-          <List>{this.arrayrender()}</List>
-          <Card>
+        </View>
+
+        <View style={{ flex: 4 }}>
+          <ScrollView>
+            <List>{this.arrayrender()}</List>
+          </ScrollView>
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <Card style={{ borderColor: "red" }}>
             <CardItem header>
               <Text>Answer done by you</Text>
             </CardItem>
           </Card>
-
-          <List>
-            <ScrollView>{this.arrayforanswer()}</ScrollView>
-          </List>
         </View>
-      </ScrollView>
+
+        <View style={{ flex: 4 }}>
+          <ScrollView>
+            <List>{this.arrayforanswer()}</List>
+          </ScrollView>
+        </View>
+        {/* <ListView
+            //style={styles.container}
+            dataSource={this.ds.cloneWithRows(this.props.ques_ans.ques_ans)}
+            renderRow={data => (
+              <View>
+                {this.arrayforanswer(data)}
+              </View>
+            )}
+            enableEmptySections={true}
+          /> */}
+      </View>
     );
   }
 }
@@ -236,8 +235,15 @@ function mapStateToProps(state) {
   console.log(state);
   return {
     record: state.record,
-    ques_ans: state.ques_ans
+    ques_ans: state.ques_ans,
+    answer: state.record.answer
   };
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 20
+  }
+});
 export default connect(mapStateToProps, null)(UserAnswer);
