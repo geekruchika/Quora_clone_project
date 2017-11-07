@@ -25,7 +25,7 @@ class SplashScreen extends React.Component {
       } else {
         // const { navigate } = nav;
         // navigate("Main");
-        console.log("123");
+        //console.log("123");
         nav.navigate("Main");
       }
     });

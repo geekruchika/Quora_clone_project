@@ -13,7 +13,8 @@ import {
   ListItem,
   Card,
   CardItem,
-  Thumbnail
+  Thumbnail,
+  Button
 } from "native-base";
 import { NavigationActions } from "react-navigation";
 import { firebase } from "../firebaseconfig";
@@ -43,6 +44,7 @@ class UserAnswer extends React.Component {
   };
 
   componentWillMount() {
+    console.log(this.props.navigation);
     var thisref = this;
     var name, email, uid;
     var user = firebase.auth().currentUser;
@@ -197,13 +199,27 @@ class UserAnswer extends React.Component {
           </Card>
         </View>
 
-        <View style={{ flex: 4 }}>
+        <View style={{ flex: 8 }}>
           <ScrollView>
             <List>{this.arrayrender()}</List>
           </ScrollView>
         </View>
-
         <View style={{ flex: 1 }}>
+          <Button
+            block
+            danger
+            style={{}}
+            onPress={() => {
+              const { navigate } = this.props.navigation;
+              console.log(this.props.navigation);
+              navigate("UserAns");
+            }}
+          >
+            <Text>Answer done by you</Text>
+          </Button>
+        </View>
+
+        {/* <View style={{ flex: 1 }}>
           <Card style={{ borderColor: "red" }}>
             <CardItem header>
               <Text>Answer done by you</Text>
@@ -215,7 +231,7 @@ class UserAnswer extends React.Component {
           <ScrollView>
             <List>{this.arrayforanswer()}</List>
           </ScrollView>
-        </View>
+        </View> */}
         {/* <ListView
             //style={styles.container}
             dataSource={this.ds.cloneWithRows(this.props.ques_ans.ques_ans)}

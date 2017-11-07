@@ -7,6 +7,7 @@ import MainTabNavigator from "./MainTabNavigator";
 import SplashScreen from "../screens/splashScreen";
 import answerScreen from "../screens/answerScreen";
 import chatScreen from "../screens/chatScreen";
+import Ans_Ques from "../screens/ans_quesScreen";
 import registerForPushNotificationsAsync from "../api/registerForPushNotificationsAsync";
 
 const RootStackNavigator = StackNavigator(
@@ -28,6 +29,9 @@ const RootStackNavigator = StackNavigator(
     },
     Chat: {
       screen: chatScreen
+    },
+    UserAns: {
+      screen: Ans_Ques
     }
   },
   { headerMode: "none" },

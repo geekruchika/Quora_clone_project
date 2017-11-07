@@ -187,7 +187,7 @@ class AnswerScreen extends React.Component {
             <List>{this.arrayrender()}</List>
           </View>
         </Content>
-        <Footer>
+        <Footer style={{ backgroundColor: "#FFFFFF" }}>
           <Button
             transparent
             danger

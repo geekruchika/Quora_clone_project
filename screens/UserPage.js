@@ -79,7 +79,7 @@ class UserPage extends React.Component {
               </TabHeading>
             }
           >
-            <UserAnswer />
+            <UserAnswer {...this.props} />
           </Tab>
 
           <Tab
@@ -109,7 +109,11 @@ class UserPage extends React.Component {
           </Tab>
         </Tabs>
 
-        <Footer>
+        <Footer
+          style={{
+            backgroundColor: "#FFFFFF"
+          }}
+        >
           <Image
             style={{
               width: 100,
