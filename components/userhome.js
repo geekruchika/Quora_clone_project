@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, ListView } from "react-native";
+import { ScrollView, ListView, StyleSheet } from "react-native";
 import {
   Button,
   View,
@@ -131,14 +131,7 @@ class UserHome extends React.Component {
             <Form style={{ flex: 8, margin: 10 }}>
               <Item stackedLabel style={{ flex: 1 }}>
                 <Input
-                  style={{
-                    flex: 1,
-                    fontSize: 20,
-                    alignContent: "flex-start",
-                    justifyContent: "flex-start",
-                    textAlignVertical: "top",
-                    margin: 5
-                  }}
+                  style={styles.input}
                   value={this.state.value}
                   multiline
                   placeholder="What is your question?"
@@ -154,7 +147,7 @@ class UserHome extends React.Component {
             <Button
               transparent
               danger
-              style={{ flex: 2, height: 30, marginTop: 40 }}
+              style={styles.button}
               onPress={() => this.postContent()}
             >
               <Text>ASK</Text>
@@ -225,3 +218,15 @@ function mapStateToProps(state) {
 //   return bindActionCreators({ fetchrecord: fetchrecord }, dispatch);
 // }, matchDispatchToProps
 export default connect(mapStateToProps)(UserHome);
+
+const styles = StyleSheet.create({
+  input: {
+    flex: 1,
+    fontSize: 20,
+    alignContent: "flex-start",
+    justifyContent: "flex-start",
+    textAlignVertical: "top",
+    margin: 5
+  },
+  button: { flex: 2, height: 30, marginTop: 40 }
+});

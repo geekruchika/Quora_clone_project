@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {} from "react-native";
+import { StyleSheet } from "react-native";
 import {
   Container,
   Header,
@@ -121,24 +121,9 @@ class AnswerScreen extends React.Component {
             <Form>
               <Item stackedLabel>
                 <Label>Your Answer:</Label>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    width: "100%"
-                  }}
-                >
+                <View style={styles.view}>
                   <Input
-                    style={{
-                      flex: 1,
-                      width: "100%",
-                      fontSize: 24,
-                      alignContent: "flex-start",
-                      justifyContent: "flex-start",
-                      textAlignVertical: "top",
-                      margin: 5
-                    }}
+                    style={styles.input}
                     value={this.state.value}
                     multiline
                     placeholder="Answer here?"
@@ -154,7 +139,7 @@ class AnswerScreen extends React.Component {
                   <Button
                     transparent
                     danger
-                    style={{ marginLeft: 240 }}
+                    style={styles.button}
                     onPress={() => this.addAnswer()}
                   >
                     <Icon name="paper-plane" style={{ marginRight: 0 }} />
@@ -188,3 +173,22 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(AnswerScreen);
+
+const styles = StyleSheet.create({
+  input: {
+    flex: 1,
+    width: "100%",
+    fontSize: 24,
+    alignContent: "flex-start",
+    justifyContent: "flex-start",
+    textAlignVertical: "top",
+    margin: 5
+  },
+  button: { marginLeft: 240 },
+  view: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: "100%"
+  }
+});
