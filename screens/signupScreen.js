@@ -1,27 +1,20 @@
 import React, { Component } from "react";
-import { TouchableOpacity, TextInput, StyleSheet } from "react-native";
+import {} from "react-native";
 import {
-  View,
   Container,
   Header,
   Title,
   Content,
   Footer,
-  FooterTab,
   Button,
-  Left,
-  Right,
-  Body,
-  Icon,
   Text,
   Input,
   Form,
   Item,
   Label
 } from "native-base";
-import { MonoText } from "../components/StyledText";
 import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
+import { CreateUser } from "../firebasemethods";
 
 class signupScreen extends React.Component {
   state = {
@@ -42,52 +35,20 @@ class signupScreen extends React.Component {
   handlePassword = text => {
     this.setState({ pass: text });
   };
-  //   setUserId = () => {
-  //     this.setState({ userId: Math.random() });
-  //   };
+
   addUser = () => {
-    console.log("adduser");
-    var id = Math.random();
     let firstname = this.state.fname;
     let lastname = this.state.lname;
     let username = this.state.user;
     let password = this.state.pass;
+
     if (firstname == "" || lastname == "" || username == "" || password == "") {
       alert("Please fillup the form.");
       return;
     }
 
     var nav = this.props.navigation;
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(username, password)
-      .then(function() {
-        var user = firebase.auth().currentUser;
-
-        user
-          .updateProfile({ displayName: firstname + " " + lastname })
-          .then(function() {
-            // Update successful.
-            alert("Account Created");
-            alert("Now you can sign with your Email and Password");
-            console.log("added");
-            const { navigate } = nav;
-            navigate("User");
-          })
-          .catch(function(error) {
-            // An error happened.
-            console.log(error);
-          });
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode);
-        console.log(errorMessage);
-        alert(errorMessage);
-        // ...
-      });
+    CreateUser(username, password, firstname, lastname, nav);
   };
 
   call = () => {
@@ -122,7 +83,7 @@ class signupScreen extends React.Component {
             <Label style={{ margin: 10 }}>EmailId:</Label>
             <Item>
               <Input
-                placeholder="" //uppercase={false}
+                placeholder=""
                 style={{ height: 30, margin: 10 }}
                 onChangeText={this.handleUName}
               />
@@ -150,12 +111,6 @@ class signupScreen extends React.Component {
         <Footer />
       </Container>
     );
-    //   <View>
-    //     <Text>page...</Text>
-    //     <TouchableOpacity onPress={this.nav}>
-    //       <Text>Back</Text>
-    //     </TouchableOpacity>
-    //   </View>
   }
 }
 export default signupScreen;

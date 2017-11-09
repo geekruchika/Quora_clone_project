@@ -1,46 +1,28 @@
-import React, { Component } from "react";
+import React from "react";
+import {} from "react-native";
 import {
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Image,
-  ScrollView
-} from "react-native";
-import {
-  View,
   Container,
   Header,
   Title,
-  Content,
   Footer,
-  FooterTab,
   Button,
   Left,
   Right,
   Body,
   Icon,
-  Text,
-  Input,
-  Form,
-  Item,
-  Label,
-  Tab,
-  Tabs,
-  TabHeading,
-  List,
-  ListItem,
-  Thumbnail,
-  Card,
-  CardItem
+  Thumbnail
 } from "native-base";
-import { MonoText } from "../components/StyledText";
-import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
-import { GiftedChat } from "react-native-gifted-chat";
 
-import { bindActionCreators } from "redux";
+import { NavigationActions } from "react-navigation";
+import { CurrentUser, pushNotificationDatabase } from "../firebasemethods";
+import { GiftedChat } from "react-native-gifted-chat";
+import KeyboardSpacer from "react-native-keyboard-spacer";
 import { connect } from "react-redux";
-import rootsaga from "../sagas/sagas";
+import { fetchChatRecord, fetchRenderChatRecord } from "../actions";
+import { Notifications } from "expo";
+import registerForPushNotificationsAsync from "../api/registerForPushNotificationsAsync";
+const PUSH_ENDPOINT = "https://exp.host/--/api/v2/push/send";
+
 class chatScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -51,7 +33,8 @@ class chatScreen extends React.Component {
     receiver: "",
     senderKey: "",
     receiverKey: "",
-    messages: []
+    messages: [],
+    notification: null
   };
 
   componentWillMount() {
@@ -60,62 +43,85 @@ class chatScreen extends React.Component {
     var recevierUid = this.props.navigation.state.params.key;
     var name, uid;
     // sender data
-    var user = firebase.auth().currentUser;
+    var user = CurrentUser();
     if (user != null) {
       name = user.displayName;
       uid = user.uid;
     }
+    this.state.senderKey = uid;
+    this.state.sender = name;
+    this.state.receiverKey = recevierUid;
+    this.state.receiver = recevierName;
 
-    this.setState(
-      {
-        senderKey: uid,
-        sender: name,
-        receiver: recevierName,
-        receiverKey: recevierUid
-      },
-      () => {
-        this.props.dispatch({
-          type: "CHAT_CONTENT_GET",
-          payload: {
-            senderkey: this.state.receiverKey,
-            receiverkey: this.state.senderKey
-            // message: this.state.messages
-          }
-        });
-      }
+    this.props.dispatch(
+      fetchChatRecord({
+        senderkey: this.state.senderKey,
+        receiverkey: this.state.receiverKey
+      })
+    );
+    this._notificationSubscription = this._registerForPushNotifications();
+  }
+
+  _registerForPushNotifications() {
+    registerForPushNotificationsAsync(this.state.senderKey);
+
+    // Watch for incoming notifications
+    this._notificationSubscription = Notifications.addListener(
+      this._handleNotification
     );
   }
 
-  onSend(messages = []) {
-    // this.setState(
-    //   previousState => ({
-    //     messages: GiftedChat.append(previousState.messages, messages)
-    //   }),
-    //   () => {
-    //     this.props.dispatch({
-    //       type: "CHAT_CONTENT",
-    //       payload: {
-    //         senderkey: this.state.receiverKey,
-    //         receiverkey: this.state.senderKey,
-    //         message: this.state.messages
-    //       }
-    //     });
-    //   }
-    // );
+  _handleNotification = ({ notification }) => {
+    this.props.dispatch(
+      fetchChatRecord({
+        senderkey: this.state.senderKey,
+        receiverkey: this.state.receiverKey
+      })
+    );
+  };
 
-    // this.props.messages = GiftedChat.append(this.props.messages, messages);
-    this.props.dispatch({
-      type: "CHAT_CONTENT",
-      payload: {
-        senderkey: this.state.receiverKey,
-        receiverkey: this.state.senderKey,
+  onSend(messages = []) {
+    this.props.dispatch(
+      fetchRenderChatRecord({
+        senderkey: this.state.senderKey,
+        receiverkey: this.state.receiverKey,
         message: GiftedChat.append(this.props.messages["messages"], messages)
-      }
-    });
+      })
+    );
+
+    var token;
+
+    var db = pushNotificationDatabase(this.state.receiverKey);
+
+    db
+      .orderByKey()
+      .once("value")
+      .then(function(snapshot) {
+        token = snapshot.child("token").val();
+        console.log(token);
+
+        fetch(PUSH_ENDPOINT, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            to: token,
+            title: "Quora",
+            body: "Message for you"
+          })
+        })
+          .then(() => {
+            console.log("success");
+          })
+          .catch(err => {
+            console.log(err, "logging post error");
+          });
+      });
   }
 
   render() {
-    console.log(this.props.messages["messages"]);
     return (
       <Container>
         <Header>
@@ -136,7 +142,10 @@ class chatScreen extends React.Component {
             avatar:
               "/Users/ruchika/Sites/projects/quora-project/img/img_avatar.png"
           }}
+          showUserAvatar={true}
         />
+
+        <KeyboardSpacer />
         <Footer>
           <Button
             transparent
@@ -159,5 +168,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(chatScreen);
-
-//export default chatScreen;

@@ -1,33 +1,43 @@
-import { Permissions, Notifications } from 'expo';
+import { Permissions, Notifications } from "expo";
+const PUSH_ENDPOINT = "https://exp.host/--/api/v2/push/send";
+import { SetToken } from "../firebasemethods";
 
-// Example server, implemented in Rails: https://git.io/vKHKv
-// const PUSH_ENDPOINT = 'https://expo-push-server.herokuapp.com/tokens';
-const PUSH_ENDPOINT = 'http://5acf2105.ngrok.io';
-
-export default (async function registerForPushNotificationsAsync() {
-  // Android remote notification permissions are granted during the app
-  // install, so this will only ask on iOS
-  let { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-
-  // Stop here if the user did not grant permissions
-  if (status !== 'granted') {
+export default (async function registerForPushNotificationsAsync(id) {
+  const { status } = await Permissions.askAsync(
+    Permissions.REMOTE_NOTIFICATIONS
+  );
+  let finalStatus = status;
+  if (finalStatus !== "granted") {
     return;
   }
 
-  // Get the token that uniquely identifies this device
   let token = await Notifications.getExpoPushTokenAsync();
+
+  if (id != "") {
+    SetToken(id, token);
+  }
+  //   var db = firebase.database().ref("/users/" + id + "/notification/");
+  // db.set({
+  //   token: token
+  // });
 
   // POST the token to our backend so we can use it to send pushes from there
   return fetch(PUSH_ENDPOINT, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({
       token: {
-        value: token,
-      },
-    }),
-  });
+        value: token
+      }
+    })
+  })
+    .then(() => {
+      console.log("success");
+    })
+    .catch(err => {
+      console.log(err, "logging post error");
+    });
 });

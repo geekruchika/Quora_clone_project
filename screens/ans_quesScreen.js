@@ -1,6 +1,5 @@
-import React, { Component } from "react";
-import { ScrollView, StyleSheet, ListView, RefreshControl } from "react-native";
-import InfiniteScrollView from "react-native-infinite-scroll-view";
+import React from "react";
+import { ScrollView, ListView } from "react-native";
 
 import {
   Left,
@@ -19,17 +18,14 @@ import {
   Button
 } from "native-base";
 import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
-
-import { bindActionCreators } from "redux";
+import { CurrentUser, deleteUserAnswerDatabase } from "../firebasemethods";
 import { connect } from "react-redux";
-import rootsaga from "../sagas/sagas";
+import { fetchquesans } from "../actions";
 
 class Ans_Ques extends React.Component {
   constructor(props) {
     super(props);
     this.arrayforanswer = this.arrayforanswer.bind(this);
-
     this.ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     });
@@ -48,41 +44,26 @@ class Ans_Ques extends React.Component {
   componentWillMount() {
     var thisref = this;
     var name, email, uid;
-    var user = firebase.auth().currentUser;
+    var user = CurrentUser();
     if (user != null) {
-      name = user.displayName;
-      email = user.email;
-      uid = user.uid;
+      this.state.userName = user.displayName;
+      this.state.email = user.email;
+      this.state.uid = user.uid;
     }
-    this.setState(
-      {
-        userName: name,
-        email: email,
-        uid: uid
-      },
-      () => {
-        this.props.dispatch({
-          type: "QUES_ANS_CONTENT",
-          payload: {
-            uid: this.state.uid
-          }
-        });
-      }
+    this.props.dispatch(
+      fetchquesans({
+        uid: this.state.uid
+      })
     );
   }
 
   deleteAnswer(ob) {
-    var db = firebase
-      .database()
-      .ref("/questions/" + ob.keyques + "/answer/" + ob.key);
-    db.remove();
-
-    this.props.dispatch({
-      type: "QUES_ANS_CONTENT",
-      payload: {
+    deleteUserAnswerDatabase(ob);
+    this.props.dispatch(
+      fetchquesans({
         uid: this.state.uid
-      }
-    });
+      })
+    );
   }
 
   test(el, thisref) {
@@ -138,13 +119,11 @@ class Ans_Ques extends React.Component {
       <View style={{ flex: 1 }}>
         <Header />
         <View style={{ flex: 1 }}>
-          {/* <View style={{ flex: 1 }}> */}
           <Card style={{ flex: 1 }}>
             <CardItem header>
               <Text>Answer done by you</Text>
             </CardItem>
           </Card>
-          {/* </View> */}
 
           <View style={{ flex: 9, backgroundColor: "#FFFFFF" }}>
             <ScrollView>

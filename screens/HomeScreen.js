@@ -1,20 +1,10 @@
 import React from "react";
+import { Image } from "react-native";
 import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity
-} from "react-native";
-//import { WebBrowser } from "expo";
-import {
-  View,
   Container,
   Header,
   Title,
   Content,
-  Footer,
-  FooterTab,
   Button,
   Left,
   Right,
@@ -26,16 +16,15 @@ import {
   Item,
   Label
 } from "native-base";
-import { MonoText } from "../components/StyledText";
 import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
+import { LoginUser } from "../firebasemethods";
 
 export default class HomeScreen extends React.Component {
-  // static navigationOptions = {
-  //   header: null,
-  // };
+  state = {
+    user: "",
+    pass: ""
+  };
 
-  state = { user: "", pass: "" };
   handleName = text => {
     this.setState({ user: text });
   };
@@ -43,23 +32,9 @@ export default class HomeScreen extends React.Component {
     this.setState({ pass: text });
   };
   login = () => {
-    //event.preventDefault();
     var email = this.state.user;
     var password = this.state.pass;
-    var nav = this.props.navigation;
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(function() {
-        alert("You are logged in now...");
-      })
-      .catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode);
-        console.log(errorMessage);
-        alert("Email or password is badly formatted");
-      });
+    LoginUser(email, password);
   };
 
   call = () => {
@@ -85,7 +60,6 @@ export default class HomeScreen extends React.Component {
           <Image
             source={require("../img/Quora-Logo.png")}
             style={{
-              //position: "center",
               width: 100,
               height: 30,
               flex: 1,
@@ -119,7 +93,7 @@ export default class HomeScreen extends React.Component {
               />
             </Item>
           </Form>
-          {/* <View> */}
+
           <Right>
             <Button
               primary
@@ -129,7 +103,7 @@ export default class HomeScreen extends React.Component {
               <Text style={{ fontWeight: "bold" }}>Login</Text>
             </Button>
           </Right>
-          {/* </View> */}
+
           <Item fixedLabel style={{ display: "flex" }}>
             <Text style={{ fontSize: 13 }}>For new user....</Text>
             <Button transparent info onPress={this.call}>
@@ -137,14 +111,6 @@ export default class HomeScreen extends React.Component {
             </Button>
           </Item>
         </Content>
-
-        {/* <Footer>
-          <FooterTab>
-            <Button full>
-              <Text>Welcome</Text>
-            </Button>
-          </FooterTab>
-        </Footer> */}
       </Container>
     );
   }

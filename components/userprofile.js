@@ -1,37 +1,23 @@
-import React, { Component } from "react";
-import { TouchableOpacity, TextInput, StyleSheet, Image } from "react-native";
+import React from "react";
+import { Image } from "react-native";
 import {
-  Container,
-  Header,
   View,
-  Title,
-  Content,
-  Footer,
-  FooterTab,
   Button,
   Left,
   Right,
   Body,
   Icon,
   Text,
-  Input,
-  Form,
-  Item,
-  Label,
-  Tab,
-  Tabs,
-  TabHeading,
   Card,
   CardItem,
   Thumbnail
 } from "native-base";
-import { MonoText } from "../components/StyledText";
 import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
-import { ImagePicker } from "expo";
+import { CurrentUser, LogOut } from "../firebasemethods";
+//import { ImagePicker } from "expo";
 // import {decode} from 'base64-arraybuffer';
-
 //import RNFetchBlob from "react-native-fetch-blob";
+
 class UserProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -43,103 +29,15 @@ class UserProfile extends React.Component {
   };
   componentWillMount() {
     const thisRef = this;
-
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        // User is signed in.
-        var displayName = user.displayName;
-        var email = user.email;
-        var emailVerified = user.emailVerified;
-        var photoURL = user.photoURL;
-        var isAnonymous = user.isAnonymous;
-        var uid = user.uid;
-        var providerData = user.providerData;
-        //console.log(email, emailVerified, photoURL, providerData);
-        thisRef.setState({
-          userName: displayName,
-          email: email
-        });
-      } else {
-        // User is signed out.
-        // ...
-      }
-    });
-
-    //var storage = firebase.app().storage("gs://my-custom-bucket");
-    // var storage = firebase.storage();
-    // var sref = storage.ref();
-    // // var imagesRef = sref.child("custom-storage");
-    // // console.log(imagesRef);
-    // sref.putString(base64, "base64");
+    var user = CurrentUser();
+    if (user) {
+      this.state.userName = user.displayName;
+      this.state.userid = user.uid;
+    }
   }
   signout = () => {
     let nav = this.props.navigation;
-    // console.log(nav);
-    firebase
-      .auth()
-      .signOut()
-      .then(
-        function() {
-          console.log("Signed Out");
-
-          const { navigate } = nav;
-          nav.goBack("Main");
-          //nav.goBack("Main");
-        },
-        function(error) {
-          console.error("Sign Out Error", error);
-        }
-      );
-  };
-
-  _pickImage = async () => {
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
-      base64: true
-    });
-
-    this._handleImagePicked(pickerResult);
-  };
-
-  _handleImagePicked = async pickerResult => {
-    let uploadResponse, uploadResult;
-    //console.log(pickerResult.base64);
-    this.setState({
-      uri: pickerResult.uri
-    });
-    // var base64 = pickerResult.base64;
-    // var storage = firebase.storage();
-    // var sref = storage.ref();
-    // var imagesRef = sref.child("custom-storage/test.jpg");
-    // //var message = "custom-storage";
-    // imagesRef.putString(base64, "base64").then(function(snapshot) {
-    //   console.log("Uploaded a base64 string!");
-    // });
-    //sref.putString(base64, "base64");
-
-    // let uriParts = pickerResult.uri.split(".");
-    // let fileType = pickerResult.uri[pickerResult.uri.length - 1];
-
-    // let formData = new FormData();
-    // formData.append("photo", {
-    //   pickerResult,
-    //   name: `photo.${fileType}`,
-    //   type: `image/${fileType}`
-    // });
-
-    // new Promise((RESOLVE, REJECT) => {
-    //   // Fetch attachment
-    //   RNFetchBlob.fetch("GET", pickerResult.uri).then(response => {
-    //     let base64Str = response.data;
-    //     //  var imageBase64 =
-    //     //    "data:" + mimetype_attachment + ";base64," + base64Str;
-    //     // Return base64 image
-    //     console.log(base64Str);
-    //     // RESOLVE(imageBase64);
-    //   });
-    // }).catch(error => {
-    //   // error handling
-    //   console.log("Error: ", error);
-    // });
+    LogOut(nav);
   };
 
   render() {
@@ -257,38 +155,61 @@ class UserProfile extends React.Component {
   }
 }
 
-// async function uploadImageAsync(uri) {
-//   let apiUrl = "https://file-upload-example-backend-dkhqoilqqn.now.sh/upload";
+export default UserProfile;
 
-//   // Note:
-//   // Uncomment this if you want to experiment with local server
-//   //
-//   // if (Constants.isDevice) {
-//   //   apiUrl = `https://your-ngrok-subdomain.ngrok.io/upload`;
-//   // } else {
-//   //   apiUrl = `http://localhost:3000/upload`
-//   // }
-//   console.log();
-//   let uriParts = uri.split(".");
-//   let fileType = uri[uri.length - 1];
+//var storage = firebase.app().storage("gs://my-custom-bucket");
+// var storage = firebase.storage();
+// var sref = storage.ref();
+// // var imagesRef = sref.child("custom-storage");
+// // console.log(imagesRef);
+// sref.putString(base64, "base64");
 
-//   let formData = new FormData();
-//   formData.append("photo", {
-//     uri,
-//     name: `photo.${fileType}`,
-//     type: `image/${fileType}`
+// _pickImage = async () => {
+//   let pickerResult = await ImagePicker.launchImageLibraryAsync({
+//     base64: true
 //   });
 
-//   let options = {
-//     method: "POST",
-//     body: formData,
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "multipart/form-data"
-//     }
-//   };
+//   this._handleImagePicked(pickerResult);
+// };
 
-//   return fetch(apiUrl, options);
-// }
+// _handleImagePicked = async pickerResult => {
+//   let uploadResponse, uploadResult;
+//   //console.log(pickerResult.base64);
+//   this.setState({
+//     uri: pickerResult.uri
+//   });
+// var base64 = pickerResult.base64;
+// var storage = firebase.storage();
+// var sref = storage.ref();
+// var imagesRef = sref.child("custom-storage/test.jpg");
+// //var message = "custom-storage";
+// imagesRef.putString(base64, "base64").then(function(snapshot) {
+//   console.log("Uploaded a base64 string!");
+// });
+//sref.putString(base64, "base64");
 
-export default UserProfile;
+// let uriParts = pickerResult.uri.split(".");
+// let fileType = pickerResult.uri[pickerResult.uri.length - 1];
+
+// let formData = new FormData();
+// formData.append("photo", {
+//   pickerResult,
+//   name: `photo.${fileType}`,
+//   type: `image/${fileType}`
+// });
+
+// new Promise((RESOLVE, REJECT) => {
+//   // Fetch attachment
+//   RNFetchBlob.fetch("GET", pickerResult.uri).then(response => {
+//     let base64Str = response.data;
+//     //  var imageBase64 =
+//     //    "data:" + mimetype_attachment + ";base64," + base64Str;
+//     // Return base64 image
+//     console.log(base64Str);
+//     // RESOLVE(imageBase64);
+//   });
+// }).catch(error => {
+//   // error handling
+//   console.log("Error: ", error);
+// });
+//};

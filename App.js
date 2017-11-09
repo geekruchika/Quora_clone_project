@@ -12,6 +12,9 @@ import { Provider } from "react-redux";
 //import { apiMiddleware, reducer } from "./redux";
 import store from "./store/store";
 
+// import { Notifications } from "expo";
+// import registerForPushNotificationsAsync from "./api/registerForPushNotificationsAsync";
+
 export default class App extends React.Component {
   state = { isLoadingComplete: false };
 
@@ -24,6 +27,8 @@ export default class App extends React.Component {
         isLoadingComplete: true
       });
     });
+
+    //registerForPushNotificationsAsync();
   }
 
   render() {

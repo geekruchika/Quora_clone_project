@@ -5,26 +5,19 @@ export default function(state = { record: [], answer: [] }, action = {}) {
         ...state,
         record: action.payload
       };
-
-      break;
     case "FETCH_ANSWER":
-      console.log("Answer fetch");
-
       return {
         ...state,
         answer: action.payload
       };
-      break;
     case "POST_STARTED":
-      console.log("started");
-      break;
-    case "POST_SUCCESS":
-      console.log("success");
-      break;
-    case "POST_FAILED":
-      console.log("failed");
-      break;
-  }
+      return state;
 
-  return state;
+    case "POST_SUCCESS":
+      return state;
+    case "POST_FAILED":
+      return state;
+    default:
+      return state;
+  }
 }

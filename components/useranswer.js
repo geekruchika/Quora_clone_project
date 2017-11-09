@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { ScrollView, StyleSheet, ListView, RefreshControl } from "react-native";
-import InfiniteScrollView from "react-native-infinite-scroll-view";
-
+import { ScrollView, StyleSheet, ListView } from "react-native";
 import {
   Left,
   Right,
@@ -17,21 +15,21 @@ import {
   Button
 } from "native-base";
 import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
-
-import { bindActionCreators } from "redux";
+import {
+  CurrentUser,
+  deleteUserQuesDatabase,
+  deleteUserAnswerDatabase
+} from "../firebasemethods";
 import { connect } from "react-redux";
-import rootsaga from "../sagas/sagas";
+import { fetchrecord } from "../actions";
 
 class UserAnswer extends React.Component {
   constructor(props) {
     super(props);
-    this.arrayforanswer = this.arrayforanswer.bind(this);
-
     this.ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     });
-    // this.dataSource = ds.cloneWithRows(this.props.ques_ans.ques_ans);
+    //this.dataSource = ds.cloneWithRows(this.props.ques_ans.ques_ans);
   }
 
   state = {
@@ -44,56 +42,28 @@ class UserAnswer extends React.Component {
   };
 
   componentWillMount() {
-    console.log(this.props.navigation);
-    var thisref = this;
     var name, email, uid;
-    var user = firebase.auth().currentUser;
+    var user = CurrentUser();
     if (user != null) {
-      name = user.displayName;
-      email = user.email;
-      uid = user.uid;
+      this.state.userName = user.displayName;
+      this.state.email = user.email;
+      this.state.uid = user.uid;
     }
-    this.setState(
-      {
-        userName: name,
-        email: email,
-        uid: uid
-      },
-      () => {
-        this.props.dispatch({
-          type: "QUES_ANS_CONTENT",
-          payload: {
-            uid: this.state.uid
-          }
-        });
-      }
-    );
 
-    this.props.dispatch({ type: "START_CONTENT" });
+    this.props.dispatch(fetchrecord());
   }
 
   deleteQuestion(ob) {
-    // console.log(ob);
-    var onComplete = function(error) {
-      if (error) {
-        console.log("Synchronization failed");
-      } else {
-        console.log("Synchronization succeeded");
-      }
-    };
-
-    var db = firebase.database().ref("/questions/" + ob.key);
-    db.remove(onComplete);
-    this.props.dispatch({ type: "START_CONTENT" });
+    deleteUserQuesDatabase(ob);
+    this.props.dispatch(fetchrecord());
   }
 
   arrayrender() {
     var ques = this.props.record["record"];
-    var name = this.state.userName;
+
     var uid = this.state.uid;
     let thisref = this;
     return ques.map(function(el, i) {
-      //console.log(el.id, uid);
       if (uid == el.id) {
         return (
           <View key={i}>
@@ -116,65 +86,7 @@ class UserAnswer extends React.Component {
     });
   }
 
-  deleteAnswer(ob) {
-    //console.log(ob);
-
-    var db = firebase
-      .database()
-      .ref("/questions/" + ob.keyques + "/answer/" + ob.key);
-    db.remove();
-    //this.props.dispatch({ type: "START_CONTENT" });
-    this.props.dispatch({
-      type: "QUES_ANS_CONTENT",
-      payload: {
-        uid: this.state.uid
-      }
-    });
-  }
-
-  test(el, thisref) {
-    return el.map(function(item, i) {
-      return (
-        <ListItem key={i} avatar>
-          <Left>
-            <Text>Me:</Text>
-          </Left>
-          <Body>
-            <Text>{item.val}</Text>
-          </Body>
-          <Right>
-            <Icon name="pint" onPress={() => thisref.deleteAnswer(item)} />
-            <Text note>Delete</Text>
-          </Right>
-        </ListItem>
-      );
-    });
-  }
-
-  arrayforanswer() {
-    var ques = this.props.ques_ans.ques_ans;
-    let thisref = this;
-    console.log(ques);
-    return ques.map(function(el, i) {
-      return (
-        <View key={i}>
-          <ListItem avatar>
-            <Left>
-              <Thumbnail source={require("../img/Q.jpg")} />
-            </Left>
-            <Body>
-              <Text>{el.ques}</Text>
-            </Body>
-            <Right />
-          </ListItem>
-          <List>{thisref.test(el.ob, thisref)}</List>
-        </View>
-      );
-    });
-  }
-
   render() {
-    //console.log(this.props.answer);
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -184,18 +96,7 @@ class UserAnswer extends React.Component {
                 <Text>{this.state.userName}</Text>
               </Left>
             </CardItem>
-            <Icon
-              style={{ flex: 1 }}
-              name="refresh"
-              onPress={() => {
-                this.props.dispatch({
-                  type: "QUES_ANS_CONTENT",
-                  payload: {
-                    uid: this.state.uid
-                  }
-                });
-              }}
-            />
+            <Icon style={{ flex: 1 }} name="refresh" onPress={() => {}} />
           </Card>
         </View>
 

@@ -1,0 +1,7 @@
+export const START_CONTENT = "START_CONTENT";
+export const POST_CONTENT = "POST_CONTENT";
+export const QUES_ANS_CONTENT = "QUES_ANS_CONTENT";
+export const ANS_CONTENT = "ANS_CONTENT";
+export const ANSWER_CONTENT = "ANSWER_CONTENT";
+export const CHAT_CONTENT_GET = "CHAT_CONTENT_GET";
+export const CHAT_CONTENT = "CHAT_CONTENT";

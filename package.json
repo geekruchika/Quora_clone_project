@@ -23,6 +23,7 @@
     "react-native-gifted-chat": "^0.3.0",
     "react-native-image-picker": "^0.26.7",
     "react-native-infinite-scroll-view": "^0.4.3",
+    "react-native-keyboard-spacer": "^0.4.1",
     "react-native-photo-upload": "^1.1.1",
     "react-navigation": "^1.0.0-beta.12",
     "react-redux": "^5.0.6",
@@ -34,8 +35,11 @@
   "devDependencies": {
     "babel-eslint": "^8.0.1",
     "babel-plugin-react-transform": "^3.0.0",
+    "eslint-config-prettier": "^2.7.0",
+    "eslint-plugin-prettier": "^2.3.1",
     "eslint-plugin-react": "^7.4.0",
     "jest-expo": "^21.0.0",
+    "prettier": "^1.8.1",
     "react-transform-hmr": "^1.0.4"
   }
 }

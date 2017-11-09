@@ -1,19 +1,11 @@
 import React, { Component } from "react";
-import {
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Image,
-  ScrollView
-} from "react-native";
+import {} from "react-native";
 import {
   Container,
   Header,
-  Title,
   Content,
   View,
   Footer,
-  FooterTab,
   Button,
   Left,
   Right,
@@ -24,26 +16,19 @@ import {
   Form,
   Item,
   Label,
-  Tab,
-  Tabs,
-  TabHeading,
   List,
   ListItem,
   Thumbnail,
   Card,
   CardItem
 } from "native-base";
-import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
 
-import { bindActionCreators } from "redux";
+import { NavigationActions } from "react-navigation";
+import { CurrentUser } from "../firebasemethods";
 import { connect } from "react-redux";
-import rootsaga from "../sagas/sagas";
+import { fetchAnsRecord, fetchRenderAnsRecord } from "../actions";
 
 class AnswerScreen extends React.Component {
-  //   constructor(props) {
-  //     super(props);
-  //   }
   state = {
     value: "",
     ques_key: "",
@@ -58,43 +43,33 @@ class AnswerScreen extends React.Component {
     var data = this.props.navigation.state.params.data;
     var key = this.props.navigation.state.params.key;
     var thisRef = this;
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        // User is signed in.
-        var displayName = user.displayName;
-        var email = user.email;
-        var id1 = user.uid;
-        thisRef.setState({
-          user: displayName,
-          ques_key: key,
-          ques_text: data,
-          id: id1
-        });
-      }
-    });
+    var user = CurrentUser();
 
-    this.props.dispatch({
-      type: "ANS_CONTENT",
-      payload: {
+    if (user) {
+      this.state.user = user.displayName;
+      this.state.id = user.uid;
+      this.state.ques_key = key;
+      this.state.ques_text = data;
+    }
+
+    this.props.dispatch(
+      fetchAnsRecord({
         key: key
-      }
-    });
+      })
+    );
   }
-
-  componentDidMount() {}
 
   addAnswer() {
     this.setState({ value: "" });
-    this.props.dispatch({
-      type: "ANSWER_CONTENT",
-      payload: {
+    this.props.dispatch(
+      fetchRenderAnsRecord({
         key: this.state.ques_key,
         ques: this.state.ques_text,
         answer: this.state.ans_text,
         user: this.state.user,
         id: this.state.id
-      }
-    });
+      })
+    );
   }
 
   arrayrender() {
@@ -111,7 +86,10 @@ class AnswerScreen extends React.Component {
               <Text>{el.name}</Text>
               <Text note>{el.text}</Text>
             </Body>
-            <Right>
+            <Right style={{ paddingBottom: 0 }}>
+              <Button transparent>
+                <Icon active name="thumbs-up" />
+              </Button>
               <Text note>1:20 pm</Text>
             </Right>
           </ListItem>
@@ -119,6 +97,7 @@ class AnswerScreen extends React.Component {
       );
     });
   }
+
   render() {
     return (
       <Container style={{ backgroundColor: "#FFFFFF" }}>
@@ -168,7 +147,8 @@ class AnswerScreen extends React.Component {
                       this.setState({
                         ans_text: text,
                         value: text
-                      })}
+                      })
+                    }
                   />
 
                   <Button
@@ -206,12 +186,5 @@ function mapStateToProps(state) {
     record: state.record
   };
 }
-// function matchDispatchToProps(dispatch) {
-//   return bindActionCreators(
-//     { increment: increment, decrement: decrement, fetchrecord: fetchrecord },
-//     dispatch
-//   );, matchDispatchToProps
-// }
-export default connect(mapStateToProps)(AnswerScreen);
 
-//export default AnswerScreen;
+export default connect(mapStateToProps)(AnswerScreen);

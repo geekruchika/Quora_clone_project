@@ -1,22 +1,19 @@
 import React, { Component } from "react";
 import { Image, ScrollView, StyleProvider } from "react-native";
-import tabTheme from "../native-base-theme/components";
-import material from "../native-base-theme/variables/material";
+//import tabTheme from "../native-base-theme/components";
+//import material from "../native-base-theme/variables/material";
 import {
   Container,
-  Content,
   Footer,
   Icon,
   Text,
   Tab,
   Tabs,
   TabHeading,
-  View,
   Header
 } from "native-base";
-//import { MonoText } from "../components/StyledText";
+
 import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
 import UserProfile from "../components/userprofile";
 import UserHome from "../components/userhome";
 import UserChat from "../components/userchat";
@@ -48,7 +45,6 @@ class UserPage extends React.Component {
   render() {
     return (
       <Container style={{ backgroundColor: "#FFFFFF" }}>
-        {/* <Content > */}
         <Header hasTabs />
         {/* <StyleProvider style={tabTheme(material)}> */}
         <Tabs initialPage={0}>

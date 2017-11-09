@@ -1,35 +1,20 @@
 import React, { Component } from "react";
-import { TouchableOpacity, TextInput, StyleSheet, Image } from "react-native";
+import {} from "react-native";
 import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Footer,
-  FooterTab,
-  Button,
   Left,
   Right,
   Body,
   View,
   Icon,
   Text,
-  Input,
-  Form,
-  Item,
-  Label,
-  Tab,
-  Tabs,
-  TabHeading,
   List,
   ListItem,
   Thumbnail,
   Card,
   CardItem
 } from "native-base";
-import { MonoText } from "../components/StyledText";
 import { NavigationActions } from "react-navigation";
-import { firebase } from "../firebaseconfig";
+import { CurrentUser, getAllUsers } from "../firebasemethods";
 import { GiftedChat } from "react-native-gifted-chat";
 
 class UserChat extends React.Component {
@@ -43,16 +28,14 @@ class UserChat extends React.Component {
   };
 
   componentWillMount() {
-    var Allusers = [];
     var thisref = this;
-    var name, email, uid;
-    var user = firebase.auth().currentUser;
-    if (user != null) {
-      name = user.displayName;
-      email = user.email;
-      uid = user.uid;
+    var Allusers = [];
+    var user = CurrentUser();
+    if (user) {
+      this.state.userid = user.uid;
     }
-    var db = firebase.database().ref("/users/");
+
+    var db = getAllUsers();
     db
       .orderByKey()
       .once("value")
@@ -65,25 +48,18 @@ class UserChat extends React.Component {
           Allusers.push(ob);
           if (Allusers.length === snapshot.numChildren()) {
             thisref.setState({
-              Alluser: Allusers,
-              userid: uid
+              Alluser: Allusers
             });
           }
         });
-      });
-    // .catch(error => {
-    //   reject(error);
-    // });
+      })
+      .catch(error => {});
   }
-  componentDidMount() {}
 
   arrayrender() {
-    // let nav = this.props.navigation;
-    // console.log(this.props.navigation);
-    // var ques = this.props.record["record"];
-    // var name = this.state.userName;
     let nav = this.props.navigation;
     let thisref = this;
+
     return this.state.Alluser.map(function(el, i) {
       if (thisref.state.userid != el.key)
         return (
@@ -96,7 +72,7 @@ class UserChat extends React.Component {
             }}
           >
             <Left>
-              <Thumbnail source={require("../img/Q.jpg")} />
+              <Thumbnail source={require("../img/img_avatar.png")} />
             </Left>
             <Body>
               <Text>{el.name}</Text>
@@ -109,7 +85,6 @@ class UserChat extends React.Component {
                   navigate("Chat", { key: el.key, name: el.name });
                 }}
               />
-              {/* <Text note>1:20 pm</Text> */}
             </Right>
           </ListItem>
         );
