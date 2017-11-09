@@ -15,7 +15,7 @@ import {
   ListItem,
   Thumbnail
 } from "native-base";
-import { NavigationActions } from "react-navigation";
+//import { NavigationActions } from "react-navigation";
 import { CurrentUser, AddUserToDatabase } from "../firebasemethods";
 import { fetchrecord, postrecord } from "../actions";
 //import { bindActionCreators } from "redux";

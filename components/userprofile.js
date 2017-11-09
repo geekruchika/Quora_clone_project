@@ -12,8 +12,8 @@ import {
   CardItem,
   Thumbnail
 } from "native-base";
-import { NavigationActions } from "react-navigation";
 import { CurrentUser, LogOut } from "../firebasemethods";
+
 //import { ImagePicker } from "expo";
 // import {decode} from 'base64-arraybuffer';
 //import RNFetchBlob from "react-native-fetch-blob";

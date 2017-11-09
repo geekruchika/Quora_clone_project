@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {} from "react-native";
 import {
   Left,
@@ -13,9 +13,7 @@ import {
   Card,
   CardItem
 } from "native-base";
-import { NavigationActions } from "react-navigation";
 import { CurrentUser, getAllUsers } from "../firebasemethods";
-import { GiftedChat } from "react-native-gifted-chat";
 
 class UserChat extends React.Component {
   constructor(props) {
@@ -42,7 +40,6 @@ class UserChat extends React.Component {
       .then(function(snapshot) {
         snapshot.forEach(function(snap) {
           var key = snap.key;
-
           var name = snap.child("user").val();
           var ob = { key, name };
           Allusers.push(ob);
@@ -61,7 +58,7 @@ class UserChat extends React.Component {
     let thisref = this;
 
     return this.state.Alluser.map(function(el, i) {
-      if (thisref.state.userid != el.key)
+      if (thisref.state.userid != el.key) {
         return (
           <ListItem
             key={i}
@@ -88,6 +85,7 @@ class UserChat extends React.Component {
             </Right>
           </ListItem>
         );
+      }
     });
   }
 
