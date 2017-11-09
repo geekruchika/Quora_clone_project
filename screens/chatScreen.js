@@ -22,6 +22,7 @@ import { fetchChatRecord, fetchRenderChatRecord } from "../actions";
 import { Notifications } from "expo";
 import registerForPushNotificationsAsync from "../api/registerForPushNotificationsAsync";
 const PUSH_ENDPOINT = "https://exp.host/--/api/v2/push/send";
+//import { firebase } from "../firebaseconfig";
 
 class chatScreen extends React.Component {
   constructor(props) {
@@ -69,6 +70,22 @@ class chatScreen extends React.Component {
     this._notificationSubscription = Notifications.addListener(
       this._handleNotification
     );
+  }
+
+  componentDidMount() {
+    // var db = firebase
+    //   .database()
+    //   .ref("/messages/" + this.state.receiverkey + this.state.senderkey);
+    // exports.thumbnailProfile = db.onWrite(event => {
+    //   var eventSnapshot = event.data;
+    //   console.log(eventSnapshot);
+    //var profilePictureSnapshot = eventSnapshot.child("profilePicture");
+    // if (profilePictureSnapshot.changed()) {
+    //   return createThumbnail(profilePictureSnapshot.val()).then(url => {
+    //     return eventSnapshot.ref.update({ profileThumbnail: url });
+    //   });
+    //}
+    //});
   }
 
   _handleNotification = ({ notification }) => {

@@ -31,10 +31,11 @@ const getContent = () => {
       .then(function(snapshot) {
         snapshot.forEach(function(snap) {
           var key = snap.key;
+          var totalans = snap.child("answer").numChildren();
           var text = snap.child("text").val();
           var name = snap.child("user").val();
           var id = snap.child("id").val();
-          var ob = { key, name, text, id };
+          var ob = { key, name, text, id, totalans };
           ques.push(ob);
           if (ques.length === snapshot.numChildren()) {
             resolve(ques);
