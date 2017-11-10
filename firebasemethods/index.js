@@ -61,7 +61,9 @@ export function CreateUser(username, password, firstname, lastname, nav) {
 
       user
         .updateProfile({
-          displayName: firstname + " " + lastname
+          displayName: firstname + " " + lastname,
+          photoURL:
+            "https://firebasestorage.googleapis.com/v0/b/myquora-5c1ab.appspot.com/o/default%2Fimg_avatar.png?alt=media&token=7852ad0a-4386-4c35-bfe6-90d9e6334151"
         })
         .then(function() {
           alert("Account Created");
@@ -113,4 +115,8 @@ export function getAllUsers() {
 
 export function chatReference(senderKey, receiverKey) {
   return firebase.database().ref("/messages/" + receiverKey + senderKey);
+}
+
+export function QuesRef() {
+  return firebase.database().ref("/questions/");
 }

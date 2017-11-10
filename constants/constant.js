@@ -5,3 +5,4 @@ export const ANS_CONTENT = "ANS_CONTENT";
 export const ANSWER_CONTENT = "ANSWER_CONTENT";
 export const CHAT_CONTENT_GET = "CHAT_CONTENT_GET";
 export const CHAT_CONTENT = "CHAT_CONTENT";
+export const IMAGE_UPLOAD = "IMAGE_UPLOAD";

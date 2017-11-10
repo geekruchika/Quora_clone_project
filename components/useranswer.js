@@ -119,7 +119,7 @@ class UserAnswer extends React.Component {
             style={{}}
             onPress={() => {
               const { navigate } = this.props.navigation;
-              console.log(this.props.navigation);
+              // console.log(this.props.navigation);
               navigate("UserAns");
             }}
           >
@@ -197,7 +197,7 @@ class UserAnswer extends React.Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state);
+  //console.log(state);
   return {
     record: state.record,
     ques_ans: state.ques_ans,

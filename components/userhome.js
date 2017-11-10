@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Fab,
   FlatList,
-  TouchableHighlight
+  TouchableHighlight,
+  Image
 } from "react-native";
 import {
   Button,
@@ -23,7 +24,7 @@ import {
   Thumbnail
 } from "native-base";
 //import { NavigationActions } from "react-navigation";
-import { CurrentUser, AddUserToDatabase } from "../firebasemethods";
+import { CurrentUser, AddUserToDatabase, QuesRef } from "../firebasemethods";
 import { fetchrecord, postrecord } from "../actions";
 //import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -43,8 +44,9 @@ class UserHome extends React.Component {
     userName: "",
     id: "",
     email: "",
-    question: [],
-    value: ""
+    record: [],
+    value: "",
+    uri: ""
   };
 
   componentWillMount() {
@@ -54,13 +56,20 @@ class UserHome extends React.Component {
       this.state.userName = user.displayName;
       this.state.email = user.email;
       this.state.id = user.uid;
-      AddUserToDatabase(user.uid, user.displayName, user.email);
+      this.state.uri = user.photoURL;
+      //console.log(user.photoURL);
     }
     registerForPushNotificationsAsync(this.state.id);
   }
 
   componentDidMount() {
-    this.props.dispatch(fetchrecord());
+    console.log("check");
+    AddUserToDatabase(this.state.id, this.state.userName, this.state.email);
+    var thisRef = this;
+    var db = QuesRef();
+    db.on("value", function() {
+      thisRef.props.dispatch(fetchrecord());
+    });
   }
 
   _keyExtractor = (item, index) => item.key;
@@ -71,7 +80,8 @@ class UserHome extends React.Component {
       postrecord({
         uid: this.state.id,
         user: this.state.userName,
-        Content: this.state.newContent
+        Content: this.state.newContent,
+        photo: this.state.uri
       })
     );
   }
@@ -125,13 +135,15 @@ class UserHome extends React.Component {
   //   });
   // }
   render() {
+    console.log(this.props.record["record"]);
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <List>
             <ListItem avatar style={{ marginTop: 10 }}>
               <Left>
-                <Thumbnail source={require("../img/img_lights.jpg")} />
+                {/* <Thumbnail source={require("../img/img_lights.jpg")} /> */}
+                <Thumbnail source={{ uri: this.state.uri }} />
               </Left>
               <Body>
                 <Text>{this.state.userName}</Text>
@@ -184,7 +196,7 @@ class UserHome extends React.Component {
                     activeOpacity={0.75}
                   >
                     <View style={{ flex: 1, flexDirection: "row" }}>
-                      <Thumbnail source={require("../img/Q.jpg")} />
+                      <Thumbnail source={{ uri: item.photo }} />
                       <View
                         style={{
                           flexDirection: "column",

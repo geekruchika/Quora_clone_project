@@ -35,7 +35,9 @@ const getContent = () => {
           var text = snap.child("text").val();
           var name = snap.child("user").val();
           var id = snap.child("id").val();
-          var ob = { key, name, text, id, totalans };
+          var photo = snap.child("image").val();
+          //console.log(photo)
+          var ob = { key, name, text, id, totalans, photo };
           ques.push(ob);
           if (ques.length === snapshot.numChildren()) {
             resolve(ques);

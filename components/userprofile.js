@@ -14,25 +14,34 @@ import {
 } from "native-base";
 import { CurrentUser, LogOut } from "../firebasemethods";
 
-//import { ImagePicker } from "expo";
+import { ImagePicker } from "expo";
+import b64 from "base64-js";
+import { firebase } from "../firebaseconfig";
 // import {decode} from 'base64-arraybuffer';
 //import RNFetchBlob from "react-native-fetch-blob";
+//import { imageUpload } from "../actions";
+import { connect } from "react-redux";
 
 class UserProfile extends React.Component {
   constructor(props) {
     super(props);
   }
   state = {
+    userid: "",
     userName: "",
     email: "",
-    uri: "/Users/ruchika/Sites/projects/quora-project/img/img_lights.jpg"
+    uri: "",
+    record: []
   };
   componentWillMount() {
-    const thisRef = this;
     var user = CurrentUser();
     if (user) {
       this.state.userName = user.displayName;
       this.state.userid = user.uid;
+      //console.log(user.photoURL);
+      // if (user.photoURL != null) {
+      //   //console.log("picc" + user.photoURL);
+      this.state.uri = user.photoURL;
     }
   }
   signout = () => {
@@ -40,23 +49,76 @@ class UserProfile extends React.Component {
     LogOut(nav);
   };
 
+  _pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      base64: true
+    });
+    const byteArray = b64.toByteArray(result.base64);
+    const metadata = { contentType: "image/jpg" };
+    const sessionId = new Date().getTime();
+    var firestore = firebase.storage().ref("images" + this.state.userid);
+    var thisRef = this;
+    firestore
+      .child("profile")
+      // .child(`${sessionId}`)
+      .put(byteArray, metadata)
+      .then(() => {
+        firestore
+          .child("profile")
+          .getDownloadURL()
+          .then(snapshot => {
+            var user = firebase.auth().currentUser;
+
+            user
+              .updateProfile({
+                photoURL: snapshot
+              })
+              .then(function() {
+                console.log("success image");
+              })
+              .catch(function(error) {
+                // An error happened.
+                console.log("fail image");
+              });
+            // this.props.dispatch(
+            //   imageUpload({
+            //     photo: snapshot
+            //   })
+            // );
+            //console.log(snapshot);
+          });
+        console.log("uploaded image!");
+      });
+    if (!result.cancelled) {
+      //console.log(result.uri);
+      this.setState({ uri: result.uri });
+    }
+  };
+  componentDidMount() {}
+
   render() {
+    //console.log(this.props.record["record"]);
     return (
       <View>
         <Card style={{ flex: 0 }}>
           <CardItem>
             <Left>
-              <Thumbnail source={require("../img/img_lights.jpg")} />
+              <Thumbnail source={{ uri: this.state.uri }} />
               <Body>
                 <Text>{this.state.userName}</Text>
                 <Text note>{this.state.email}</Text>
               </Body>
             </Left>
+            <Right>
+              <Button transparent primary onPress={this._pickImage}>
+                <Text>Edit Pic</Text>
+              </Button>
+            </Right>
           </CardItem>
           <CardItem>
             <Body>
               <Image
-                source={require("../img/img_lights.jpg")}
+                source={{ uri: this.state.uri }}
                 style={{ height: 200, width: 340, flex: 1 }}
               />
             </Body>
@@ -89,18 +151,12 @@ class UserProfile extends React.Component {
             </Right>
           </CardItem>
         </Card>
-        {/* <View>
-          <Button onPress={this._pickImage}>
-            <Text>check</Text>
-          </Button>
-
-          <Image
+        <View>
+          {/* <Image
             style={{ height: 200, width: 200 }}
-            source={{
-              uri: this.state.uri
-            }}
-          />
-        </View> */}
+            source={{ uri: this.state.uri }}
+          /> */}
+        </View>
         <View>
           <Card>
             <CardItem header>
@@ -154,8 +210,12 @@ class UserProfile extends React.Component {
     );
   }
 }
-
-export default UserProfile;
+function mapStateToProps(state) {
+  return {
+    record: state.record
+  };
+}
+export default connect(mapStateToProps)(UserProfile);
 
 //var storage = firebase.app().storage("gs://my-custom-bucket");
 // var storage = firebase.storage();

@@ -45,3 +45,10 @@ export function fetchRenderChatRecord(payload) {
     payload
   };
 }
+
+export function imageUpload(payload) {
+  return {
+    type: types.IMAGE_UPLOAD,
+    payload
+  };
+}

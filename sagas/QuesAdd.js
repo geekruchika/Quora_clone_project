@@ -30,12 +30,14 @@ const postContent = payload => {
   var name = payload.user;
   var uid = payload.uid;
   var content = payload.Content;
+  var photo = payload.photo;
   var db = firebase.database().ref("/questions/");
   if (content != "")
     db.push({
       user: name,
       id: uid,
-      text: content
+      text: content,
+      image: photo
     });
 };
 const getContent = () => {
@@ -53,7 +55,8 @@ const getContent = () => {
           var text = snap.child("text").val();
           var name = snap.child("user").val();
           var id = snap.child("id").val();
-          var ob = { key, name, text, id, totalans };
+          var photo = snap.child("image").val();
+          var ob = { key, name, text, id, totalans, photo };
           ques.push(ob);
           if (ques.length === snapshot.numChildren()) {
             resolve(ques);
