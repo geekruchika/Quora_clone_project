@@ -13,16 +13,20 @@ import {
   Thumbnail
 } from "native-base";
 
-import { NavigationActions } from "react-navigation";
-import { CurrentUser, pushNotificationDatabase } from "../firebasemethods";
+//import { NavigationActions } from "react-navigation";
+import {
+  CurrentUser,
+  pushNotificationToOther,
+  chatReference
+} from "../firebasemethods";
 import { GiftedChat } from "react-native-gifted-chat";
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import { connect } from "react-redux";
 import { fetchChatRecord, fetchRenderChatRecord } from "../actions";
 import { Notifications } from "expo";
-import registerForPushNotificationsAsync from "../api/registerForPushNotificationsAsync";
+// import registerForPushNotificationsAsync from "../api/registerForPushNotificationsAsync";
+
 const PUSH_ENDPOINT = "https://exp.host/--/api/v2/push/send";
-//import { firebase } from "../firebaseconfig";
 
 class chatScreen extends React.Component {
   constructor(props) {
@@ -54,47 +58,31 @@ class chatScreen extends React.Component {
     this.state.receiverKey = recevierUid;
     this.state.receiver = recevierName;
 
-    this.props.dispatch(
-      fetchChatRecord({
-        senderkey: this.state.senderKey,
-        receiverkey: this.state.receiverKey
-      })
-    );
     this._notificationSubscription = this._registerForPushNotifications();
   }
 
-  _registerForPushNotifications() {
-    registerForPushNotificationsAsync(this.state.senderKey);
+  componentDidMount() {
+    var thisRef = this;
+    var db = chatReference(this.state.senderKey, this.state.receiverKey);
 
-    // Watch for incoming notifications
+    db.on("value", function(dataSnapshot) {
+      thisRef.props.dispatch(
+        fetchChatRecord({
+          senderkey: thisRef.state.senderKey,
+          receiverkey: thisRef.state.receiverKey
+        })
+      );
+    });
+  }
+  _registerForPushNotifications() {
+    //Watch for incoming notifications
     this._notificationSubscription = Notifications.addListener(
       this._handleNotification
     );
   }
 
-  componentDidMount() {
-    // var db = firebase
-    //   .database()
-    //   .ref("/messages/" + this.state.receiverkey + this.state.senderkey);
-    // exports.thumbnailProfile = db.onWrite(event => {
-    //   var eventSnapshot = event.data;
-    //   console.log(eventSnapshot);
-    //var profilePictureSnapshot = eventSnapshot.child("profilePicture");
-    // if (profilePictureSnapshot.changed()) {
-    //   return createThumbnail(profilePictureSnapshot.val()).then(url => {
-    //     return eventSnapshot.ref.update({ profileThumbnail: url });
-    //   });
-    //}
-    //});
-  }
-
-  _handleNotification = ({ notification }) => {
-    this.props.dispatch(
-      fetchChatRecord({
-        senderkey: this.state.senderKey,
-        receiverkey: this.state.receiverKey
-      })
-    );
+  _handleNotification = notification => {
+    //console.log(data);
   };
 
   onSend(messages = []) {
@@ -105,18 +93,14 @@ class chatScreen extends React.Component {
         message: GiftedChat.append(this.props.messages["messages"], messages)
       })
     );
-
-    var token;
-
-    var db = pushNotificationDatabase(this.state.receiverKey);
-
+    var thisRef = this;
+    var db = pushNotificationToOther(this.state.receiverKey);
     db
       .orderByKey()
       .once("value")
       .then(function(snapshot) {
-        token = snapshot.child("token").val();
-        console.log(token);
-
+        var token = snapshot.child("token").val();
+        //console.log(token);
         fetch(PUSH_ENDPOINT, {
           method: "POST",
           headers: {
@@ -125,8 +109,15 @@ class chatScreen extends React.Component {
           },
           body: JSON.stringify({
             to: token,
+            // data: [
+            //   {
+            //     recevier: thisRef.state.receiverKey,
+            //     Name: thisRef.state.receiver
+            //   }
+            // ],
             title: "Quora",
             body: "Message for you"
+            //badge: 4
           })
         })
           .then(() => {

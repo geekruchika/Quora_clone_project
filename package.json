@@ -25,6 +25,7 @@
     "react-native-infinite-scroll-view": "^0.4.3",
     "react-native-keyboard-spacer": "^0.4.1",
     "react-native-photo-upload": "^1.1.1",
+    "react-native-popup-dialog": "^0.9.39",
     "react-navigation": "^1.0.0-beta.12",
     "react-redux": "^5.0.6",
     "react-time": "^4.3.0",

@@ -47,7 +47,7 @@ const RootStackNavigator = StackNavigator(
 
 export default class RootNavigator extends React.Component {
   componentDidMount() {
-    // this._notificationSubscription = this._registerForPushNotifications();
+    //this._notificationSubscription = this._registerForPushNotifications();
   }
 
   componentWillUnmount() {
@@ -63,11 +63,11 @@ export default class RootNavigator extends React.Component {
   //   this._notificationSubscription = Notifications.addListener(
   //     this._handleNotification
   //   );
-  //}
+  // }
 
-  _handleNotification = ({ origin, data }) => {
-    console.log(
-      `Push notification ${origin} with data: ${JSON.stringify(data)}`
-    );
-  };
+  // _handleNotification = ({ data }) => {
+  //   console.log("Notification received");
+  //   console.log("Notification received");
+  //   alert(data);
+  // };
 }

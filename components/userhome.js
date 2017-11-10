@@ -27,14 +27,16 @@ import { CurrentUser, AddUserToDatabase } from "../firebasemethods";
 import { fetchrecord, postrecord } from "../actions";
 //import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+//import { Notifications } from "expo";
+import registerForPushNotificationsAsync from "../api/registerForPushNotificationsAsync";
 
 class UserHome extends React.Component {
   constructor(props) {
     super(props);
-    this.ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
-    this.dataSource = this.ds.cloneWithRows(this.props.record["record"]);
+    // this.ds = new ListView.DataSource({
+    //   rowHasChanged: (r1, r2) => r1 !== r2
+    // });
+    // this.dataSource = this.ds.cloneWithRows(this.props.record["record"]);
   }
   state = {
     newContent: "",
@@ -54,7 +56,10 @@ class UserHome extends React.Component {
       this.state.id = user.uid;
       AddUserToDatabase(user.uid, user.displayName, user.email);
     }
+    registerForPushNotificationsAsync(this.state.id);
+  }
 
+  componentDidMount() {
     this.props.dispatch(fetchrecord());
   }
 
@@ -262,16 +267,6 @@ class UserHome extends React.Component {
                 </View>
               )}
             />
-            {/* {this.state.newTweetModalOpen ? null : (
-                <Fab
-                  position="bottomRight"
-                  style={{ backgroundColor: "#4286f4", zIndex: -1 }}
-                  onPress={this.openModal.bind(this)}
-                  ref={"FAB"}
-                >
-                  <Icon name="md-create" />
-                </Fab>
-              )} */}
           </View>
         </View>
       </View>
@@ -301,7 +296,6 @@ const styles = StyleSheet.create({
   button: { flex: 2, height: 30, marginTop: 40 },
 
   topMargin: {
-    // marginTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight,
     backgroundColor: "white",
     zIndex: -1
   },
@@ -341,27 +335,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center"
   }
-  // modalFooter: {
-  //   backgroundColor: "white",
-  //   elevation: 3,
-  //   shadowColor: "#000",
-  //   shadowOffset: { width: 0, height: 0.2 },
-  //   shadowOpacity: 0.3,
-  //   shadowRadius: 2,
-  //   height: 54,
-  //   width: "100%",
-  //   flexDirection: "row",
-  //   justifyContent: "flex-start",
-  //   alignItems: "center",
-  //   padding: 5
-  // },
-  // modal: {
-  //   justifyContent: "flex-start",
-  //   alignItems: "center",
-  //   position: "absolute",
-  //   zIndex: 4,
-  //   elevation: 4
-  //height: Dimensions.get("window").height - Expo.Constants.statusBarHeight,
-  //marginTop: Expo.Constants.statusBarHeight / 2
-  //}
 });

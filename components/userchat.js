@@ -74,15 +74,20 @@ class UserChat extends React.Component {
             <Body>
               <Text>{el.name}</Text>
             </Body>
-            <Right>
-              <Icon
-                name="chatbubbles"
-                onPress={() => {
-                  const { navigate } = nav;
-                  navigate("Chat", { key: el.key, name: el.name });
-                }}
-              />
-            </Right>
+            {/* <Right> */}
+
+            <Icon
+              style={{
+                marginRight: 10,
+                fontSize: 20
+              }}
+              name="ios-text-outline"
+              onPress={() => {
+                const { navigate } = nav;
+                navigate("Chat", { key: el.key, name: el.name });
+              }}
+            />
+            {/* </Right> */}
           </ListItem>
         );
       }

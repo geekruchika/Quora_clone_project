@@ -103,10 +103,14 @@ export function deleteUserAnswerDatabase(ob) {
   db.remove();
 }
 
-export function pushNotificationDatabase(recevierkey) {
+export function pushNotificationToOther(recevierkey) {
   return firebase.database().ref("/users/" + recevierkey + "/notification/");
 }
 
 export function getAllUsers() {
   return firebase.database().ref("/users/");
+}
+
+export function chatReference(senderKey, receiverKey) {
+  return firebase.database().ref("/messages/" + receiverKey + senderKey);
 }

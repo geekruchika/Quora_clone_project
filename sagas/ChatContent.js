@@ -50,7 +50,7 @@ const getChat = payload => {
         var key = snapshot.key;
         var text = snapshot.child("message").val();
         messages = text;
-        console.log(messages);
+        //console.log(messages);
         resolve(messages);
       })
       .catch(error => {

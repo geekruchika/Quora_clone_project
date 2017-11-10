@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { ScrollView, StyleSheet, ListView } from "react-native";
 import {
   Left,
@@ -12,20 +12,20 @@ import {
   Card,
   CardItem,
   Thumbnail,
-  Button
+  Button,
+  Header,
+  Title
 } from "native-base";
-import { NavigationActions } from "react-navigation";
-import {
-  CurrentUser,
-  deleteUserQuesDatabase,
-  deleteUserAnswerDatabase
-} from "../firebasemethods";
+
+import { CurrentUser, deleteUserQuesDatabase } from "../firebasemethods";
 import { connect } from "react-redux";
 import { fetchrecord } from "../actions";
+import PopupDialog, { SlideAnimation } from "react-native-popup-dialog";
 
 class UserAnswer extends React.Component {
   constructor(props) {
     super(props);
+    this.ob = "";
     this.ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     });
@@ -76,8 +76,14 @@ class UserAnswer extends React.Component {
                 <Text note>{el.text}</Text>
               </Body>
               <Right>
-                <Icon name="pint" onPress={() => thisref.deleteQuestion(el)} />
-                <Text note>Delete</Text>
+                <Icon
+                  name="pint"
+                  onPress={() => {
+                    //thisref.deleteQuestion(el)
+                    thisref.ob = el;
+                    thisref.popupDialog.show();
+                  }}
+                />
               </Right>
             </ListItem>
           </View>
@@ -87,6 +93,7 @@ class UserAnswer extends React.Component {
   }
 
   render() {
+    const slideAnimation = new SlideAnimation({ slideFrom: "bottom" });
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -119,6 +126,47 @@ class UserAnswer extends React.Component {
             <Text>Answer done by you</Text>
           </Button>
         </View>
+        <PopupDialog
+          ref={popupDialog => {
+            this.popupDialog = popupDialog;
+          }}
+          dialogAnimation={slideAnimation}
+        >
+          <View
+            style={
+              { display: "flex", alignItems: "center" }
+              //justifyContent: " center"
+            }
+          >
+            <View style={{}}>
+              <Text>Sure you want to delete?</Text>
+            </View>
+            <View>
+              <Button
+                transparent
+                danger
+                onPress={() => {
+                  this.deleteQuestion(this.ob);
+                  this.popupDialog.dismiss();
+                  //thisref.popupDialog.show();
+                }}
+              >
+                <Text>Yes</Text>
+              </Button>
+            </View>
+            <View>
+              <Button
+                transparent
+                danger
+                onPress={() => {
+                  this.popupDialog.dismiss();
+                }}
+              >
+                <Text>No</Text>
+              </Button>
+            </View>
+          </View>
+        </PopupDialog>
 
         {/* <View style={{ flex: 1 }}>
           <Card style={{ borderColor: "red" }}>
