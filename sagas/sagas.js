@@ -6,6 +6,7 @@ import quesAns from "./UserGivenAnswer";
 import atStart from "./GetAllQues";
 import atStartAnswer from "./GetAllAnswer";
 import imagePost from "./ImgUpload";
+import user from "./UserDetail";
 const rootSaga = function* rootSaga() {
   yield [
     watchPost(),
@@ -15,7 +16,8 @@ const rootSaga = function* rootSaga() {
     chatData(),
     chatgetData(),
     quesAns(),
-    imagePost()
+    imagePost(),
+    user()
   ];
 };
 

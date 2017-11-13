@@ -52,3 +52,10 @@ export function imageUpload(payload) {
     payload
   };
 }
+
+export function userRecord(payload) {
+  return {
+    type: types.USER_RECORD,
+    payload
+  };
+}

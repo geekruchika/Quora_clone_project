@@ -19,7 +19,7 @@ import b64 from "base64-js";
 import { firebase } from "../firebaseconfig";
 // import {decode} from 'base64-arraybuffer';
 //import RNFetchBlob from "react-native-fetch-blob";
-//import { imageUpload } from "../actions";
+import { imageUpload, userRecord } from "../actions";
 import { connect } from "react-redux";
 
 class UserProfile extends React.Component {
@@ -31,16 +31,15 @@ class UserProfile extends React.Component {
     userName: "",
     email: "",
     uri: "",
-    record: []
+    record: [],
+    user: []
   };
   componentWillMount() {
     var user = CurrentUser();
     if (user) {
       this.state.userName = user.displayName;
       this.state.userid = user.uid;
-      //console.log(user.photoURL);
-      // if (user.photoURL != null) {
-      //   //console.log("picc" + user.photoURL);
+      this.state.email = user.email;
       this.state.uri = user.photoURL;
     }
   }
@@ -57,7 +56,7 @@ class UserProfile extends React.Component {
     const metadata = { contentType: "image/jpg" };
     const sessionId = new Date().getTime();
     var firestore = firebase.storage().ref("images" + this.state.userid);
-    var thisRef = this;
+
     firestore
       .child("profile")
       // .child(`${sessionId}`)
@@ -80,30 +79,37 @@ class UserProfile extends React.Component {
                 // An error happened.
                 console.log("fail image");
               });
-            // this.props.dispatch(
-            //   imageUpload({
-            //     photo: snapshot
-            //   })
-            // );
-            //console.log(snapshot);
+            this.props.dispatch(
+              imageUpload({
+                photo: snapshot,
+                id: this.state.userid
+              })
+            );
+            console.log(snapshot);
           });
         console.log("uploaded image!");
       });
     if (!result.cancelled) {
-      //console.log(result.uri);
-      this.setState({ uri: result.uri });
+      this.props.dispatch(
+        userRecord({
+          name: this.state.userName,
+          email: this.state.email,
+          id: this.state.id,
+          image: result.uri
+        })
+      );
     }
   };
   componentDidMount() {}
 
   render() {
-    //console.log(this.props.record["record"]);
+    //console.log(this.props.user.user.image);
     return (
       <View>
         <Card style={{ flex: 0 }}>
           <CardItem>
             <Left>
-              <Thumbnail source={{ uri: this.state.uri }} />
+              <Thumbnail source={{ uri: this.props.user.user.image }} />
               <Body>
                 <Text>{this.state.userName}</Text>
                 <Text note>{this.state.email}</Text>
@@ -118,7 +124,7 @@ class UserProfile extends React.Component {
           <CardItem>
             <Body>
               <Image
-                source={{ uri: this.state.uri }}
+                source={{ uri: this.props.user.user.image }}
                 style={{ height: 200, width: 340, flex: 1 }}
               />
             </Body>
@@ -151,12 +157,7 @@ class UserProfile extends React.Component {
             </Right>
           </CardItem>
         </Card>
-        <View>
-          {/* <Image
-            style={{ height: 200, width: 200 }}
-            source={{ uri: this.state.uri }}
-          /> */}
-        </View>
+
         <View>
           <Card>
             <CardItem header>
@@ -212,7 +213,8 @@ class UserProfile extends React.Component {
 }
 function mapStateToProps(state) {
   return {
-    record: state.record
+    record: state.record,
+    user: state.user
   };
 }
 export default connect(mapStateToProps)(UserProfile);

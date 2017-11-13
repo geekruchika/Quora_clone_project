@@ -25,10 +25,9 @@ import {
 } from "native-base";
 //import { NavigationActions } from "react-navigation";
 import { CurrentUser, AddUserToDatabase, QuesRef } from "../firebasemethods";
-import { fetchrecord, postrecord } from "../actions";
+import { fetchrecord, postrecord, userRecord } from "../actions";
 //import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-//import { Notifications } from "expo";
 import registerForPushNotificationsAsync from "../api/registerForPushNotificationsAsync";
 
 class UserHome extends React.Component {
@@ -46,7 +45,9 @@ class UserHome extends React.Component {
     email: "",
     record: [],
     value: "",
-    uri: ""
+    uri: "",
+    toggle: false,
+    user: []
   };
 
   componentWillMount() {
@@ -57,18 +58,24 @@ class UserHome extends React.Component {
       this.state.email = user.email;
       this.state.id = user.uid;
       this.state.uri = user.photoURL;
-      //console.log(user.photoURL);
     }
     registerForPushNotificationsAsync(this.state.id);
   }
 
   componentDidMount() {
-    console.log("check");
     AddUserToDatabase(this.state.id, this.state.userName, this.state.email);
     var thisRef = this;
     var db = QuesRef();
     db.on("value", function() {
       thisRef.props.dispatch(fetchrecord());
+      thisRef.props.dispatch(
+        userRecord({
+          name: thisRef.state.userName,
+          email: thisRef.state.email,
+          id: thisRef.state.id,
+          image: thisRef.state.uri
+        })
+      );
     });
   }
 
@@ -86,56 +93,7 @@ class UserHome extends React.Component {
     );
   }
 
-  // arrayrender() {
-  //   let nav = this.props.navigation;
-  //   var ques = this.props.record["record"];
-  //   var name = this.state.userName;
-  //   //ques.reverse();
-  //   return ques.map(function(el, i) {
-  //     return (
-  //       <ListItem
-  //         key={i}
-  //         avatar
-  //         onPress={() => {
-  //           console.log(el.text);
-  //           const { navigate } = nav;
-  //           navigate("Answer", {
-  //             data: el.text,
-  //             key: el.key,
-  //             user: name,
-  //             asked: el.name
-  //           });
-  //         }}
-  //       >
-  //         <Left>
-  //           <Thumbnail source={require("../img/Q.jpg")} />
-  //         </Left>
-  //         <Body>
-  //           <Text>{el.name}</Text>
-  //           <Text note>{el.text}</Text>
-  //         </Body>
-  //         <Right>
-  //           <Icon
-  //             name="paper"
-  //             onPress={() => {
-  //               console.log(el.text);
-  //               const { navigate } = nav;
-  //               navigate("Answer", {
-  //                 data: el.text,
-  //                 key: el.key,
-  //                 user: name,
-  //                 asked: el.name
-  //               });
-  //             }}
-  //           />
-  //           <Text note>1:20 pm</Text>
-  //         </Right>
-  //       </ListItem>
-  //     );
-  //   });
-  // }
   render() {
-    console.log(this.props.record["record"]);
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -143,7 +101,7 @@ class UserHome extends React.Component {
             <ListItem avatar style={{ marginTop: 10 }}>
               <Left>
                 {/* <Thumbnail source={require("../img/img_lights.jpg")} /> */}
-                <Thumbnail source={{ uri: this.state.uri }} />
+                <Thumbnail source={{ uri: this.props.user.user.image }} />
               </Left>
               <Body>
                 <Text>{this.state.userName}</Text>
@@ -232,7 +190,6 @@ class UserHome extends React.Component {
                         transparent
                         dark
                         onPress={() => {
-                          //console.log(el.text);
                           var nav = this.props.navigation;
                           const { navigate } = nav;
                           navigate("Answer", {
@@ -254,9 +211,27 @@ class UserHome extends React.Component {
                         </Button>
                       </View> */}
                     <View style={styles.footerIcons}>
-                      <Button transparent dark>
-                        <Icon name="thumbs-up" />
-                        <Text style={styles.badgeCount}>{item.likes}</Text>
+                      <Button
+                        transparent
+                        dark
+                        onPress={() => {
+                          //console.log(this.state.toggle);
+                          {
+                            /* if (this.state.toggle == false) {
+                            this.setState({
+                              toggle: true
+                            });
+                          } else this.setState({ toggle: false }); */
+                          }
+                        }}
+                      >
+                        {this.state.toggle ? (
+                          <Icon active name="thumbs-up" />
+                        ) : (
+                          <Icon name="thumbs-up" />
+                        )}
+
+                        <Text style={styles.badgeCount}>1</Text>
                       </Button>
                     </View>
                     <View style={styles.footerIcons}>
@@ -287,7 +262,8 @@ class UserHome extends React.Component {
 }
 function mapStateToProps(state) {
   return {
-    record: state.record
+    record: state.record,
+    user: state.user
   };
 }
 
