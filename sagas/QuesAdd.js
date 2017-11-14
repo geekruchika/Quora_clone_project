@@ -8,7 +8,7 @@ const watchPost = function* watchPost() {
       try {
         yield call(postContent.bind(this, action.payload));
         yield put({ type: "POST_SUCCESS" });
-        var data = yield call(getContent);
+        var data = yield call(getContent.bind(this, action.payload));
         // console.log(data);
         yield put({
           type: "FETCH_CONTENT",
@@ -41,8 +41,9 @@ const postContent = payload => {
       likes: ""
     });
 };
-const getContent = () => {
+const getContent = payload => {
   var ques = [];
+  console.log("add ques");
   var db = firebase.database().ref("/questions/");
 
   return new Promise((resolve, reject) => {
@@ -56,6 +57,15 @@ const getContent = () => {
           var text = snap.child("text").val();
           var name = snap.child("user").val();
           var id = snap.child("id").val();
+          var likecount = snap.child("likes_id").numChildren();
+          var photo = snap.child("image").val();
+          var check = snap.child("likes_id");
+          var like = false;
+          check.forEach(function(el) {
+            if (el.child("like").val() === payload.uid) {
+              like = true;
+            }
+          });
           var photo = snap.child("image").val();
           var ob = { key, name, text, id, totalans, photo };
           ques.push(ob);

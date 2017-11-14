@@ -50,7 +50,11 @@ class UserAnswer extends React.Component {
       this.state.uid = user.uid;
     }
 
-    this.props.dispatch(fetchrecord());
+    this.props.dispatch(
+      fetchrecord({
+        payload: this.state.uid
+      })
+    );
   }
 
   deleteQuestion(ob) {

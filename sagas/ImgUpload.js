@@ -5,8 +5,8 @@ const imagePost = function* imagePost() {
   yield takeEvery("IMAGE_UPLOAD", function*(action) {
     try {
       yield call(postContent.bind(this, action.payload));
-      var data = yield call(getContent);
-      console.log(data);
+      var data = yield call(getContent.bind(this, action.payload));
+      // console.log(data);
       yield put({
         type: "FETCH_CONTENT",
         payload: data
@@ -29,7 +29,7 @@ const postContent = payload => {
     .then(function(snapshot) {
       snapshot.forEach(function(snap) {
         if (payload.id == snap.child("id").val()) {
-          console.log("image update");
+          // console.log("image update");
           var newref = firebase.database().ref("/questions/" + snap.key);
           newref.update({
             image: photo
@@ -38,10 +38,10 @@ const postContent = payload => {
       });
     });
 };
-const getContent = () => {
+const getContent = payload => {
   var ques = [];
   var db = firebase.database().ref("/questions/");
-  console.log("in get");
+  //console.log("in get");
   return new Promise((resolve, reject) => {
     db
       .orderByKey()
@@ -54,7 +54,15 @@ const getContent = () => {
           var name = snap.child("user").val();
           var id = snap.child("id").val();
           var photo = snap.child("image").val();
-          var ob = { key, name, text, id, totalans, photo };
+          var likecount = snap.child("likes_id").numChildren();
+          var check = snap.child("likes_id");
+          var like = false;
+          check.forEach(function(el) {
+            if (el.child("like").val() === payload.id) {
+              like = true;
+            }
+          });
+          var ob = { key, name, text, id, totalans, photo, likecount, like };
           ques.push(ob);
           if (ques.length === snapshot.numChildren()) {
             resolve(ques);

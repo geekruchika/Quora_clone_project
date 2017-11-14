@@ -1,7 +1,10 @@
 import * as types from "../constants/constant";
 
-export function fetchrecord() {
-  return { type: types.START_CONTENT };
+export function fetchrecord(payload) {
+  return {
+    type: types.START_CONTENT,
+    payload
+  };
 }
 
 export function postrecord(payload) {

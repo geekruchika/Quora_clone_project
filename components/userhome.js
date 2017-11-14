@@ -76,7 +76,7 @@ class UserHome extends React.Component {
     var thisRef = this;
     var db = QuesRef();
     db.on("value", function() {
-      thisRef.props.dispatch(fetchrecord());
+      thisRef.props.dispatch(fetchrecord({ uid: thisRef.state.id }));
       thisRef.props.dispatch(
         userRecord({
           name: thisRef.state.userName,
@@ -103,10 +103,6 @@ class UserHome extends React.Component {
   }
 
   toggleLike(key) {
-    // var i = this.state.toggle;
-    // console.log(this.state.toggle);
-    // this.setState({ toggle: !i });
-    console.log(key);
     var thisRef = this;
     var db = firebase.database().ref("/questions/" + key + "/likes_id/");
     var flag = 1;
@@ -115,13 +111,13 @@ class UserHome extends React.Component {
       .once("value")
       .then(function(snapshot) {
         var key = snapshot.key;
-        console.log(key);
+        //console.log(key);
         // db.push({ like: thisRef.state.id });
         snapshot.forEach(function(snap) {
           var like = snap.child("like").val();
-          console.log(like);
+          // console.log(like);
           if (like == thisRef.state.id) {
-            console.log(snap.key);
+            // console.log(snap.key);
             db = db.child(snap.key);
             db.remove();
             flag = 0;
@@ -134,8 +130,7 @@ class UserHome extends React.Component {
   }
 
   render() {
-    //console.log("render" + this.state.toggle);
-
+    console.log(this.props.user.user);
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -258,19 +253,11 @@ class UserHome extends React.Component {
                         dark
                         transparent
                         onPress={() => {
-                          this.active = false;
-                          var thisRef = this;
-                          item.check.forEach(function(el) {
-                            if (el.like == thisRef.state.id) {
-                              this.active = true;
-                            }
-                          });
-                          console.log(this.active);
                           this.toggleLike(item.key);
                         }}
                       >
-                        <Icon active={this.active} name="thumbs-up" />
-                        <Text style={styles.badgeCount}>{item.like}</Text>
+                        <Icon active={item.like} name="thumbs-up" />
+                        <Text style={styles.badgeCount}>{item.likecount}</Text>
                       </Button>
                     </View>
                     <View style={styles.footerIcons}>

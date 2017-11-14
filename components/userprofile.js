@@ -110,7 +110,7 @@ class UserProfile extends React.Component {
   componentDidMount() {}
 
   render() {
-    //console.log(this.props.user.user.image);
+    console.log(this.props.user.user.image);
     return (
       <View>
         <Card style={{ flex: 0 }}>
