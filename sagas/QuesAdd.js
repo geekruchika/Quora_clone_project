@@ -37,7 +37,8 @@ const postContent = payload => {
       user: name,
       id: uid,
       text: content,
-      image: photo
+      image: photo,
+      likes: ""
     });
 };
 const getContent = () => {

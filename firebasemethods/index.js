@@ -58,7 +58,6 @@ export function CreateUser(username, password, firstname, lastname, nav) {
     .createUserWithEmailAndPassword(username, password)
     .then(function() {
       var user = firebase.auth().currentUser;
-
       user
         .updateProfile({
           displayName: firstname + " " + lastname,
@@ -88,9 +87,9 @@ export function CurrentUser() {
   return firebase.auth().currentUser;
 }
 
-export function AddUserToDatabase(id, name, email) {
+export function AddUserToDatabase(id, name, email, uri) {
   var db = firebase.database().ref("/users/" + id);
-  db.set({ email: email, user: name });
+  db.set({ email: email, user: name, image: uri });
 }
 
 export function deleteUserQuesDatabase(ob) {

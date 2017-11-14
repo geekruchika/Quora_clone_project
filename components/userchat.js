@@ -41,7 +41,8 @@ class UserChat extends React.Component {
         snapshot.forEach(function(snap) {
           var key = snap.key;
           var name = snap.child("user").val();
-          var ob = { key, name };
+          var image = snap.child("image").val();
+          var ob = { key, name, image };
           Allusers.push(ob);
           if (Allusers.length === snapshot.numChildren()) {
             thisref.setState({
@@ -65,11 +66,11 @@ class UserChat extends React.Component {
             avatar
             onPress={() => {
               const { navigate } = nav;
-              navigate("Chat", { key: el.key, name: el.name });
+              navigate("Chat", { key: el.key, name: el.name, image: el.image });
             }}
           >
             <Left>
-              <Thumbnail source={require("../img/img_avatar.png")} />
+              <Thumbnail source={{ uri: el.image }} />
             </Left>
             <Body>
               <Text>{el.name}</Text>

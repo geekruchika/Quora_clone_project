@@ -6,7 +6,7 @@ const atStartAnswer = function* atStartAnswer() {
     yield put({ type: "POST_STARTED" });
     try {
       var data = yield call(getAnswer.bind(this, action.payload));
-      console.log(data);
+
       yield put({
         type: "FETCH_ANSWER",
         payload: data
@@ -20,7 +20,6 @@ const atStartAnswer = function* atStartAnswer() {
 export default atStartAnswer;
 
 const getAnswer = payload => {
-  console.log(payload);
   var ques = [];
   var db = firebase.database().ref("/questions/" + payload.key + "/answer/");
   return new Promise((resolve, reject) => {

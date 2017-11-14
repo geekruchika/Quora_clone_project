@@ -35,9 +35,17 @@ const getContent = () => {
           var text = snap.child("text").val();
           var name = snap.child("user").val();
           var id = snap.child("id").val();
+          var like = snap.child("likes_id").numChildren();
           var photo = snap.child("image").val();
+          var check = snap.child("likes_id");
+          // var toggle=false;
+          // console.log("-----" + check);
+          // check.forEach(function(el) {
+          //   if(el.like==id)
+          //   console.log(el);
+          // });
           //console.log(photo)
-          var ob = { key, name, text, id, totalans, photo };
+          var ob = { key, name, text, id, totalans, photo, like, check };
           ques.push(ob);
           if (ques.length === snapshot.numChildren()) {
             resolve(ques);

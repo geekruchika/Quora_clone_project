@@ -134,7 +134,9 @@ class chatScreen extends React.Component {
       <Container>
         <Header>
           <Left>
-            <Thumbnail source={require("../img/img_lights.jpg")} />
+            <Thumbnail
+              source={{ uri: this.props.navigation.state.params.image }}
+            />
           </Left>
           <Body>
             <Title>{this.state.receiver}</Title>

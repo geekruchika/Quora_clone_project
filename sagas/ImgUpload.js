@@ -2,7 +2,6 @@ import { put, takeEvery, all, call } from "redux-saga/effects";
 import { firebase } from "../firebaseconfig";
 
 const imagePost = function* imagePost() {
-  console.log("in saga");
   yield takeEvery("IMAGE_UPLOAD", function*(action) {
     try {
       yield call(postContent.bind(this, action.payload));
@@ -21,7 +20,6 @@ const imagePost = function* imagePost() {
 export default imagePost;
 
 const postContent = payload => {
-  console.log("in post");
   var photo = payload.photo;
   var db = firebase.database().ref("/questions/");
 

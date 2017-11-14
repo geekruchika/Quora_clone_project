@@ -12,7 +12,7 @@ import {
   CardItem,
   Thumbnail
 } from "native-base";
-import { CurrentUser, LogOut } from "../firebasemethods";
+import { CurrentUser, LogOut, getAllUsers } from "../firebasemethods";
 
 import { ImagePicker } from "expo";
 import b64 from "base64-js";
@@ -52,11 +52,14 @@ class UserProfile extends React.Component {
     const result = await ImagePicker.launchImageLibraryAsync({
       base64: true
     });
+    if (result.cancelled == true) {
+      return;
+    }
     const byteArray = b64.toByteArray(result.base64);
     const metadata = { contentType: "image/jpg" };
-    const sessionId = new Date().getTime();
+    // const sessionId = new Date().getTime();
     var firestore = firebase.storage().ref("images" + this.state.userid);
-
+    var chatUsr = firebase.database().ref("/users/" + this.state.userid);
     firestore
       .child("profile")
       // .child(`${sessionId}`)
@@ -69,9 +72,7 @@ class UserProfile extends React.Component {
             var user = firebase.auth().currentUser;
 
             user
-              .updateProfile({
-                photoURL: snapshot
-              })
+              .updateProfile({ photoURL: snapshot })
               .then(function() {
                 console.log("success image");
               })
@@ -79,26 +80,32 @@ class UserProfile extends React.Component {
                 // An error happened.
                 console.log("fail image");
               });
+            chatUsr.update({
+              image: snapshot
+            });
             this.props.dispatch(
               imageUpload({
                 photo: snapshot,
                 id: this.state.userid
               })
             );
-            console.log(snapshot);
+            this.props.dispatch(
+              userRecord({
+                name: this.state.userName,
+                email: this.state.email,
+                id: this.state.id,
+                image: result.uri
+              })
+            );
+          })
+          .catch(error => {
+            console.log(error);
           });
         console.log("uploaded image!");
+      })
+      .catch(error => {
+        console.log(error);
       });
-    if (!result.cancelled) {
-      this.props.dispatch(
-        userRecord({
-          name: this.state.userName,
-          email: this.state.email,
-          id: this.state.id,
-          image: result.uri
-        })
-      );
-    }
   };
   componentDidMount() {}
 
@@ -111,8 +118,8 @@ class UserProfile extends React.Component {
             <Left>
               <Thumbnail source={{ uri: this.props.user.user.image }} />
               <Body>
-                <Text>{this.state.userName}</Text>
-                <Text note>{this.state.email}</Text>
+                <Text>{this.props.user.user.userName}</Text>
+                <Text note>{this.props.user.user.email}</Text>
               </Body>
             </Left>
             <Right>

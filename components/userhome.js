@@ -29,10 +29,11 @@ import { fetchrecord, postrecord, userRecord } from "../actions";
 //import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import registerForPushNotificationsAsync from "../api/registerForPushNotificationsAsync";
-
+import { firebase } from "../firebaseconfig";
 class UserHome extends React.Component {
   constructor(props) {
     super(props);
+    this.active = false;
     // this.ds = new ListView.DataSource({
     //   rowHasChanged: (r1, r2) => r1 !== r2
     // });
@@ -46,8 +47,9 @@ class UserHome extends React.Component {
     record: [],
     value: "",
     uri: "",
-    toggle: false,
-    user: []
+
+    user: [],
+    toggle: false
   };
 
   componentWillMount() {
@@ -57,13 +59,20 @@ class UserHome extends React.Component {
       this.state.userName = user.displayName;
       this.state.email = user.email;
       this.state.id = user.uid;
-      this.state.uri = user.photoURL;
+
+      if (user.photoURL != null) this.state.uri = user.photoURL;
     }
     registerForPushNotificationsAsync(this.state.id);
   }
 
   componentDidMount() {
-    AddUserToDatabase(this.state.id, this.state.userName, this.state.email);
+    AddUserToDatabase(
+      this.state.id,
+      this.state.userName,
+      this.state.email,
+      this.state.uri
+      // this.props.user.user.image
+    );
     var thisRef = this;
     var db = QuesRef();
     db.on("value", function() {
@@ -93,7 +102,40 @@ class UserHome extends React.Component {
     );
   }
 
+  toggleLike(key) {
+    // var i = this.state.toggle;
+    // console.log(this.state.toggle);
+    // this.setState({ toggle: !i });
+    console.log(key);
+    var thisRef = this;
+    var db = firebase.database().ref("/questions/" + key + "/likes_id/");
+    var flag = 1;
+    db
+      .orderByKey()
+      .once("value")
+      .then(function(snapshot) {
+        var key = snapshot.key;
+        console.log(key);
+        // db.push({ like: thisRef.state.id });
+        snapshot.forEach(function(snap) {
+          var like = snap.child("like").val();
+          console.log(like);
+          if (like == thisRef.state.id) {
+            console.log(snap.key);
+            db = db.child(snap.key);
+            db.remove();
+            flag = 0;
+          }
+        });
+        if (flag == 1) {
+          db.push({ like: thisRef.state.id });
+        }
+      });
+  }
+
   render() {
+    //console.log("render" + this.state.toggle);
+
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -144,7 +186,8 @@ class UserHome extends React.Component {
 
           <View style={{ justifyContent: "flex-start" }}>
             <FlatList
-              data={this.props.record["record"]}
+              data={this.props.record["record"].reverse()}
+              extraData={this.state}
               keyExtractor={this._keyExtractor}
               renderItem={({ item }) => (
                 <View style={styles.view}>
@@ -212,26 +255,22 @@ class UserHome extends React.Component {
                       </View> */}
                     <View style={styles.footerIcons}>
                       <Button
-                        transparent
                         dark
+                        transparent
                         onPress={() => {
-                          //console.log(this.state.toggle);
-                          {
-                            /* if (this.state.toggle == false) {
-                            this.setState({
-                              toggle: true
-                            });
-                          } else this.setState({ toggle: false }); */
-                          }
+                          this.active = false;
+                          var thisRef = this;
+                          item.check.forEach(function(el) {
+                            if (el.like == thisRef.state.id) {
+                              this.active = true;
+                            }
+                          });
+                          console.log(this.active);
+                          this.toggleLike(item.key);
                         }}
                       >
-                        {this.state.toggle ? (
-                          <Icon active name="thumbs-up" />
-                        ) : (
-                          <Icon name="thumbs-up" />
-                        )}
-
-                        <Text style={styles.badgeCount}>1</Text>
+                        <Icon active={this.active} name="thumbs-up" />
+                        <Text style={styles.badgeCount}>{item.like}</Text>
                       </Button>
                     </View>
                     <View style={styles.footerIcons}>
@@ -254,6 +293,14 @@ class UserHome extends React.Component {
                 </View>
               )}
             />
+            {/* <View style={styles.footerIcons}>
+              <Button dark transparent onPress={this.toggleLike}>
+                <Icon active={this.state.toggle} name="thumbs-up" />
+                <Text style={styles.badgeCount}>
+                  {this.state.toggle ? "true" : "false"}
+                </Text>
+              </Button>
+            </View> */}
           </View>
         </View>
       </View>
