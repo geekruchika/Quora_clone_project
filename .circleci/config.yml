@@ -9,4 +9,4 @@ jobs:
       general:
   branches:
     only:
-      - development # or regexes
+      - /development-.*/ # or regexes
