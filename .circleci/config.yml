@@ -9,5 +9,5 @@ jobs:
 general:
   branches:
     only:
-      - master
-      - /development-.*/ # or regexes
+      - development
+      
