@@ -13,10 +13,10 @@ general:
       
 test:
     docker:
-      - image: circleci/<language>:<version TAG>
+      - image: circleci/ruby:2.4.1
     steps:
       - checkout
-      - run: <command>
+      - run: "A first hello test"
 workflows:
   version: 2
   build_and_test:
