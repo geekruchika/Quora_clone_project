@@ -10,57 +10,42 @@ import {
   Tab,
   Tabs,
   TabHeading,
-  Header
+  Header,
+  Title
 } from "native-base";
 
-import { NavigationActions } from "react-navigation";
 import UserProfile from "../components/userprofile";
 import UserHome from "../components/userhome";
 import UserChat from "../components/userchat";
 import UserAnswer from "../components/useranswer";
-
+import { CurrentUser } from "../firebasemethods";
 class UserPage extends React.Component {
   constructor(props) {
     super(props);
   }
 
-  // renderSelectedTab() {
-  //   switch (this.state.selectedTab) {
-  //     case "UserHome":
-  //       return <UserHome {...this.props} />;
-  //       break;
-  //     case "UserProfile":
-  //       return <UserProfile {...this.props} />;
-  //       break;
-  //     case "UserChat":
-  //       return <UserChat />;
-  //       break;
-  //     case "UserAnswer":
-  //       return <UserAnswer />;
-  //       break;
-  //     default:
-  //   }
-  // }
-
   render() {
     return (
       <Container style={{ backgroundColor: "#FFFFFF" }}>
-        <Header hasTabs />
-        {/* <StyleProvider style={tabTheme(material)}> */}
-        <Tabs initialPage={0}>
+        <Header hasTabs style={{ backgroundColor: "#d9534f", height: 40 }}>
+          <Title
+            style={
+              { color: "white", alignSelf: "center", fontSize: 20 }
+              // fontWeight: 400
+            }
+          >
+            {CurrentUser().displayName}
+          </Title>
+        </Header>
+        <Tabs
+          initialPage={0}
+          tabBarUnderlineStyle={{ backgroundColor: "white" }}
+        >
           <Tab
             heading={
-              <TabHeading>
-                {/* <TouchableOpacity
-                  active={this.state.selectedTab === "UserHome"}
-                  onPress={() => {
-                    this.changecolor();
-                    this.setState({ selectedTab: "UserHome" });
-                  }}
-                > */}
+              <TabHeading style={{ backgroundColor: "#d9534f" }}>
                 <Icon name="home" style={{ fontSize: 22 }} />
-                <Text>Home</Text>
-                {/* </TouchableOpacity> */}
+                <Text style={{ color: "white" }}>Home</Text>
               </TabHeading>
             }
           >
@@ -69,9 +54,9 @@ class UserPage extends React.Component {
 
           <Tab
             heading={
-              <TabHeading>
+              <TabHeading style={{ backgroundColor: "#d9534f" }}>
                 <Icon name="paper" />
-                <Text>Answer</Text>
+                <Text style={{ color: "white" }}>Answer</Text>
               </TabHeading>
             }
           >
@@ -80,9 +65,9 @@ class UserPage extends React.Component {
 
           <Tab
             heading={
-              <TabHeading>
+              <TabHeading style={{ backgroundColor: "#d9534f" }}>
                 <Icon active name="chatbubbles" />
-                <Text>Chat</Text>
+                <Text style={{ color: "white" }}>Chat</Text>
               </TabHeading>
             }
           >
@@ -93,9 +78,9 @@ class UserPage extends React.Component {
 
           <Tab
             heading={
-              <TabHeading>
+              <TabHeading style={{ backgroundColor: "#d9534f" }}>
                 <Icon name="person" style={{ alignItems: "center" }} />
-                <Text>Profile</Text>
+                <Text style={{ color: "white" }}>Profile</Text>
               </TabHeading>
             }
           >
@@ -105,12 +90,19 @@ class UserPage extends React.Component {
           </Tab>
         </Tabs>
 
-        <Footer
-          style={{
-            backgroundColor: "#FFFFFF"
-          }}
-        >
-          <Image
+        <Footer style={{ backgroundColor: "#d9534f" }}>
+          <Text
+            style={{
+              fontSize: 30,
+              color: "white",
+              alignSelf: "center",
+              fontWeight: "bold",
+              fontStyle: "italic"
+            }}
+          >
+            Que‘
+          </Text>
+          {/* <Image
             style={{
               width: 100,
               height: 30,
@@ -121,7 +113,7 @@ class UserPage extends React.Component {
               marginHorizontal: 130
             }}
             source={require("../img/Quora-Logo.png")}
-          />
+          /> */}
         </Footer>
       </Container>
     );

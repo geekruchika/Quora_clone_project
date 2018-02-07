@@ -17,7 +17,6 @@ import {
   Footer,
   Button
 } from "native-base";
-import { NavigationActions } from "react-navigation";
 import { CurrentUser, deleteUserAnswerDatabase } from "../firebasemethods";
 import { connect } from "react-redux";
 import { fetchquesans } from "../actions";
@@ -76,17 +75,19 @@ class Ans_Ques extends React.Component {
           <Body>
             <Text>{item.val}</Text>
           </Body>
-          {/* <Right> */}
+
           <Button
             transparent
             danger
             style={{ paddingBottom: 0, paddingTop: 0 }}
             onPress={() => thisref.deleteAnswer(item)}
           >
-            {/* <Icon name="pint" /> */}
-            <Text>X</Text>
+            <Icon
+              style={{ alignSelf: "center", marginRight: 10, fontSize: 25 }}
+              onPress={this._toggleModal}
+              name="ios-close"
+            />
           </Button>
-          {/* </Right> */}
         </ListItem>
       );
     });

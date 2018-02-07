@@ -123,7 +123,6 @@ class UserAnswer extends React.Component {
             style={{}}
             onPress={() => {
               const { navigate } = this.props.navigation;
-              // console.log(this.props.navigation);
               navigate("UserAns");
             }}
           >
@@ -171,37 +170,12 @@ class UserAnswer extends React.Component {
             </View>
           </View>
         </PopupDialog>
-
-        {/* <View style={{ flex: 1 }}>
-          <Card style={{ borderColor: "red" }}>
-            <CardItem header>
-              <Text>Answer done by you</Text>
-            </CardItem>
-          </Card>
-        </View>
-
-        <View style={{ flex: 4 }}>
-          <ScrollView>
-            <List>{this.arrayforanswer()}</List>
-          </ScrollView>
-        </View> */}
-        {/* <ListView
-            //style={styles.container}
-            dataSource={this.ds.cloneWithRows(this.props.ques_ans.ques_ans)}
-            renderRow={data => (
-              <View>
-                {this.arrayforanswer(data)}
-              </View>
-            )}
-            enableEmptySections={true}
-          /> */}
       </View>
     );
   }
 }
 
 function mapStateToProps(state) {
-  //console.log(state);
   return {
     record: state.record,
     ques_ans: state.ques_ans,

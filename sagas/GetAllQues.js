@@ -22,7 +22,7 @@ export default atStart;
 
 const getContent = payload => {
   var ques = [];
-  console.log("get all ques");
+  // console.log("get all ques");
   var db = firebase.database().ref("/questions/");
 
   return new Promise((resolve, reject) => {

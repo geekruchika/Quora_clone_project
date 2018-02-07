@@ -10,7 +10,8 @@ import {
   Right,
   Body,
   Icon,
-  Thumbnail
+  Thumbnail,
+  Text
 } from "native-base";
 
 //import { NavigationActions } from "react-navigation";
@@ -132,15 +133,26 @@ class chatScreen extends React.Component {
   render() {
     return (
       <Container>
-        <Header>
-          <Left>
-            <Thumbnail
-              source={{ uri: this.props.navigation.state.params.image }}
-            />
-          </Left>
-          <Body>
-            <Title>{this.state.receiver}</Title>
-          </Body>
+        <Header style={{ height: 80, backgroundColor: "#d9534f", padding: 10 }}>
+          <Thumbnail
+            source={{ uri: this.props.navigation.state.params.image }}
+          />
+
+          {/* <Body> */}
+          {/* <Title> */}
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              alignSelf: "center",
+              margin: 15,
+              color: "white"
+            }}
+          >
+            {this.state.receiver}
+          </Text>
+          {/* </Title> */}
+          {/* </Body> */}
           <Right />
         </Header>
         <GiftedChat

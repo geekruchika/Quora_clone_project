@@ -59,8 +59,16 @@ class signupScreen extends React.Component {
   render() {
     return (
       <Container>
-        <Header>
-          <Title>Create Account</Title>
+        <Header style={{ backgroundColor: "#d9534f" }}>
+          <Title
+            style={{
+              justifyContent: "center",
+              alignSelf: "center",
+              color: "white"
+            }}
+          >
+            SignUp
+          </Title>
         </Header>
         <Content style={{ backgroundColor: "#FFFFFF" }}>
           <Label style={{ margin: 10 }}>Firstname:</Label>
