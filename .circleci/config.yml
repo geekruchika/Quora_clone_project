@@ -6,7 +6,8 @@ jobs:
     steps:
       - checkout
       - run: echo "A first hello"
-      general:
+general:
   branches:
     only:
+      - master
       - /development-.*/ # or regexes
